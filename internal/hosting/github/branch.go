@@ -10,7 +10,7 @@ import (
 func mapBranch(b *github.Branch) *hosting.Branch {
 	branch := hosting.Branch{
 		Name:   b.GetName(),
-		Commit: nil,
+		Commit: mapCommit(b.GetCommit()),
 	}
 
 	return &branch

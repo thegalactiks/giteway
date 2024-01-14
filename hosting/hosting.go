@@ -10,10 +10,10 @@ type Repository struct {
 	Name          string    `json:"name"`
 	DefaultBranch string    `json:"default_branch"`
 	CloneURL      string    `json:"clone_url"`
-	GitURL        string    `json:"git_url,omitempty"`
-	CreatedAt     time.Time `json:"created_at,omitempty"`
-	PushedAt      time.Time `json:"pushed_at,omitempty"`
-	UpdatedAt     time.Time `json:"updated_at,omitempty"`
+	GitURL        string    `json:"git_url"`
+	CreatedAt     time.Time `json:"created_at"`
+	PushedAt      time.Time `json:"pushed_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 type Branch struct {
@@ -21,7 +21,14 @@ type Branch struct {
 	Commit *Commit `json:"commit,omitempty"`
 }
 
-type File struct{}
+type File struct {
+	Type     string  `json:"type"`
+	Content  *string `json:"content,omitempty"`
+	Encoding *string `json:"encoding,omitempty"`
+	Size     *int    `json:"size,omitempty"`
+	Name     string  `json:"name"`
+	Path     string  `json:"path"`
+}
 
 type CommitAuthor struct {
 	Date  time.Time `json:"date"`
@@ -40,6 +47,6 @@ type Hosting interface {
 	GetRepositories(ctx context.Context, owner string) ([]Repository, error)
 	GetRepository(ctx context.Context, owner string, repo string) (*Repository, error)
 	GetBranches(ctx context.Context, repo *Repository) ([]Branch, error)
-	GetFiles(ctx context.Context, repo *Repository, branch *Branch) ([]File, error)
-	GetCommits(ctx context.Context, repo *Repository, branch *Branch) ([]Commit, error)
+	GetCommits(ctx context.Context, repo *Repository) ([]Commit, error)
+	GetFiles(ctx context.Context, repo *Repository, path string) ([]File, error)
 }

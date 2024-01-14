@@ -28,6 +28,7 @@ func (h *Handler) GetBranches(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(200, branches)

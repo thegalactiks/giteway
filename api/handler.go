@@ -34,8 +34,7 @@ func Routes(r *gin.Engine, h *Handler) {
 
 	gitRepoApi.Use(middlewares.HostingMiddleware)
 	gitRepoApi.GET("/branches", h.GetBranches)
-	// gitRepoApi.GET("/commits", h.GetCommits)
-	// gitRepoApi.GET("/commits/:ref", h.GetCommit)
-	// gitRepoApi.GET("/files", h.GetFiles)
+	gitRepoApi.GET("/commits", h.GetCommits)
+	gitRepoApi.GET("/files", h.GetFiles)
 	// gitRepoApi.GET("/files/:path", h.GetFile)
 }

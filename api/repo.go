@@ -57,6 +57,7 @@ func (h *Handler) GetRepository(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, repo)
