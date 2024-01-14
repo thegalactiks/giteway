@@ -7,6 +7,7 @@ require (
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-contrib/timeout v0.0.6
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/go-github/v58 v58.0.0
 	github.com/knadh/koanf v1.5.0
 	github.com/magiconair/properties v1.8.7
 	github.com/spf13/cobra v1.8.0
@@ -36,7 +37,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.15.5 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
