@@ -11,8 +11,8 @@ type HostingGithub struct {
 
 var _ hosting.Hosting = (*HostingGithub)(nil)
 
-func New() *HostingGithub {
+func New(token *string) (*HostingGithub, error) {
 	return &HostingGithub{
 		client: github.NewClient(nil),
-	}
+	}, nil
 }

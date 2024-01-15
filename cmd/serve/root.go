@@ -27,7 +27,7 @@ import (
 
 func timeoutMiddleware() gin.HandlerFunc {
 	return timeout.New(
-		timeout.WithTimeout(500*time.Millisecond),
+		timeout.WithTimeout(1000*time.Millisecond),
 		timeout.WithHandler(func(c *gin.Context) {
 			c.Next()
 		}),
