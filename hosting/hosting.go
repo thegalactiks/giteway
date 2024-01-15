@@ -48,5 +48,5 @@ type Hosting interface {
 	GetRepository(ctx context.Context, owner string, repo string) (*Repository, error)
 	GetBranches(ctx context.Context, repo *Repository) ([]Branch, error)
 	GetCommits(ctx context.Context, repo *Repository) ([]Commit, error)
-	GetFiles(ctx context.Context, repo *Repository, path string) ([]File, error)
+	GetFiles(ctx context.Context, repo *Repository, path string) (*File, []File, error)
 }

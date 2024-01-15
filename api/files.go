@@ -7,10 +7,15 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
+type FileURI struct {
+	RepoURI
+	Path string `json:"path" uri:"path,default=/"`
+}
+
 // Get files list
 // @Summary Get files list.
 func (h *Handler) GetFiles(c *gin.Context) {
-	uri := RepoURI{}
+	uri := FileURI{}
 	if err := c.BindUri(&uri); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, err)
 		return
@@ -23,7 +28,7 @@ func (h *Handler) GetFiles(c *gin.Context) {
 	}
 
 	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Repo}
-	files, err := hsting.(hosting.Hosting).GetFiles(c.Request.Context(), &repo, "/")
+	file, files, err := hsting.(hosting.Hosting).GetFiles(c.Request.Context(), &repo, uri.Path)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -31,11 +36,10 @@ func (h *Handler) GetFiles(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, files)
-}
+	if file != nil {
+		c.JSON(200, file)
+		return
+	}
 
-// Get file content
-// @Summary Get file content.
-func (h *Handler) GetFile(c *gin.Context) {
-	c.JSON(200, hosting.File{})
+	c.JSON(200, files)
 }

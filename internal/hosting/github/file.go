@@ -2,7 +2,6 @@ package github
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/go-github/v58/github"
 	"github.com/thegalactiks/giteway/hosting"
@@ -25,14 +24,14 @@ func mapFile(c *github.RepositoryContent) *hosting.File {
 	return &file
 }
 
-func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, path string) ([]hosting.File, error) {
+func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, path string) (*hosting.File, []hosting.File, error) {
 	fileContent, dirContent, _, err := h.client.Repositories.GetContents(ctx, repo.Owner, repo.Name, path, &github.RepositoryContentGetOptions{})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if fileContent != nil {
-		return nil, errors.New("the path is not a directory")
+		return mapFile(fileContent), nil, err
 	}
 
 	var files []hosting.File
@@ -41,5 +40,5 @@ func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, 
 		files = append(files, *hostingFile)
 	}
 
-	return files, nil
+	return nil, files, nil
 }
