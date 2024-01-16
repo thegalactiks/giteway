@@ -14,6 +14,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
+	github.com/xanzy/go-gitlab v0.95.2
 	go.uber.org/fx v1.20.1
 	go.uber.org/zap v1.26.0
 )
@@ -60,7 +61,6 @@ require (
 	github.com/swaggo/swag v1.8.12 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
-	github.com/xanzy/go-gitlab v0.95.2 // indirect
 	go.uber.org/dig v1.17.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect

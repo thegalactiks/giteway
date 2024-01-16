@@ -1,0 +1,22 @@
+FROM golang:1.21-bullseye AS builder
+
+WORKDIR /go/src/github.com/emmanuelgautier/giteway
+
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+ENV CGO_ENABLED 0
+ENV GO111MODULE on
+
+RUN go mod download
+
+COPY . .
+
+RUN go build -o /usr/bin/giteway .
+
+FROM gcr.io/distroless/static-debian11:nonroot AS runner
+
+COPY --from=builder --chown=nonroot:nonroot /usr/bin/giteway /usr/bin/giteway
+
+ENTRYPOINT ["giteway", "serve"]
+CMD ["giteway"]

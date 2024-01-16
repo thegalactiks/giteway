@@ -1,0 +1,6 @@
+FROM gcr.io/distroless/static-debian11:nonroot
+
+COPY --chown=nonroot:nonroot giteway /usr/bin/giteway
+
+ENTRYPOINT ["giteway", "serve"]
+CMD ["giteway"]
