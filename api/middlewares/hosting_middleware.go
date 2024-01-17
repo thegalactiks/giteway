@@ -28,21 +28,16 @@ func getTokenFromContext(c *gin.Context) (*string, error) {
 }
 
 func getHostingFromURLParam(c *gin.Context) (hosting.Hosting, error) {
+	token, err := getTokenFromContext(c)
+	if err != nil {
+		return nil, err
+	}
+
 	switch c.Param("hosting") {
 	case "github.com":
-		token, err := getTokenFromContext(c)
-		if err != nil {
-			return nil, err
-		}
-
 		return github.New(token)
 
 	case "gitlab.com":
-		token, err := getTokenFromContext(c)
-		if err != nil {
-			return nil, err
-		}
-
 		if token == nil || *token == "" {
 			return nil, errors.New("gitlab require a token")
 		}

@@ -14,7 +14,7 @@ type HostingGitlab struct {
 var _ hosting.Hosting = (*HostingGitlab)(nil)
 
 func New(token string) (*HostingGitlab, error) {
-	client, err := gitlab.NewClient(token)
+	client, err := gitlab.NewOAuthClient(token)
 	if err != nil {
 		return nil, err
 	}

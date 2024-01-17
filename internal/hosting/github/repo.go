@@ -22,19 +22,53 @@ func mapRepository(owner string, r *github.Repository) *hosting.Repository {
 	return &repo
 }
 
-func (h *HostingGithub) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
-	githubRepos, _, err := h.client.Repositories.ListByUser(ctx, owner, &github.RepositoryListByUserOptions{})
-	if err != nil {
-		return nil, err
-	}
-
+func mapRepositories(owner string, rs []*github.Repository) []hosting.Repository {
 	var repos []hosting.Repository
-	for _, r := range githubRepos {
+	for _, r := range rs {
 		hostingRepo := mapRepository(owner, r)
 		repos = append(repos, *hostingRepo)
 	}
 
-	return repos, nil
+	return repos
+}
+
+func (h *HostingGithub) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
+	org, _, err := h.client.Organizations.Get(ctx, owner)
+	if err == nil && org.GetLogin() == owner {
+		githubRepos, _, err := h.client.Repositories.ListByOrg(ctx, owner, &github.RepositoryListByOrgOptions{
+			Sort: "updated",
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return mapRepositories(owner, githubRepos), nil
+	}
+
+	var user *github.User
+	if h.hasToken {
+		user, _, _ = h.client.Users.Get(ctx, "")
+	}
+
+	if user != nil && user.GetLogin() == owner {
+		githubRepos, _, err := h.client.Repositories.ListByAuthenticatedUser(ctx, &github.RepositoryListByAuthenticatedUserOptions{
+			Sort: "updated",
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return mapRepositories(owner, githubRepos), nil
+	}
+
+	githubRepos, _, err := h.client.Repositories.ListByUser(ctx, owner, &github.RepositoryListByUserOptions{
+		Sort: "updated",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return mapRepositories(owner, githubRepos), nil
 }
 
 func (h *HostingGithub) GetRepository(ctx context.Context, owner string, repo string) (*hosting.Repository, error) {
