@@ -67,3 +67,15 @@ func (h *HostingGitlab) GetFiles(ctx context.Context, repo *hosting.Repository, 
 
 	return nil, files, nil
 }
+
+func (h *HostingGitlab) GetRawFile(ctx context.Context, repo *hosting.Repository, path string) ([]byte, error) {
+	pid := createPid(repo)
+	pathWithoutSlash := strings.TrimLeft(path, "/")
+	ref := "master"
+
+	file, _, err := h.client.RepositoryFiles.GetRawFile(pid, pathWithoutSlash, &gitlab.GetRawFileOptions{
+		Ref: &ref,
+	})
+
+	return file, err
+}

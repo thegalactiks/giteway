@@ -2,6 +2,7 @@ package github
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/go-github/v58/github"
 	"github.com/thegalactiks/giteway/hosting"
@@ -41,4 +42,22 @@ func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, 
 	}
 
 	return nil, files, nil
+}
+
+func (h *HostingGithub) GetRawFile(ctx context.Context, repo *hosting.Repository, path string) ([]byte, error) {
+	fileContent, _, _, err := h.client.Repositories.GetContents(ctx, repo.Owner, repo.Name, path, &github.RepositoryContentGetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	if fileContent == nil {
+		return nil, errors.New("the path should be a valid file path")
+	}
+
+	c, err := fileContent.GetContent()
+	if err != nil {
+		return nil, err
+	}
+
+	return []byte(c), nil
 }

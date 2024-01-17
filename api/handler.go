@@ -6,6 +6,10 @@ import (
 	"github.com/thegalactiks/giteway/internal/config"
 )
 
+const (
+	RawMimeTypes string = "application/vnd.giteway.raw"
+)
+
 type Handler struct {
 	c *config.Config
 	e *gin.Engine

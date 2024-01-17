@@ -28,18 +28,33 @@ func (h *Handler) GetFiles(c *gin.Context) {
 	}
 
 	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Repo}
-	file, files, err := hsting.(hosting.Hosting).GetFiles(c.Request.Context(), &repo, uri.Path)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+	switch c.NegotiateFormat(gin.MIMEJSON, RawMimeTypes) {
+	case RawMimeTypes:
+		file, err := hsting.(hosting.Hosting).GetRawFile(c.Request.Context(), &repo, uri.Path)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 
-	if file != nil {
-		c.JSON(200, file)
+		c.Data(200, RawMimeTypes, file)
 		return
-	}
 
-	c.JSON(200, files)
+	default:
+		file, files, err := hsting.(hosting.Hosting).GetFiles(c.Request.Context(), &repo, uri.Path)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if file != nil {
+			c.JSON(200, file)
+			return
+		}
+
+		c.JSON(200, files)
+	}
 }
