@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/yaml"
@@ -19,16 +20,17 @@ type Config struct {
 }
 
 type ServeConfig struct {
-	BaseUrl string `json:"base_url"`
-	Port    int    `json:"port"`
+	BaseUrl string `json:"base_url" yaml:"base_url"`
+	Port    int    `json:"port" yaml:"port"`
 	Cors    struct {
-		Enabled          bool     `json:"enabled"`
-		AllowOrigins     []string `json:"allowed_origins"`
-		AllowedMethods   []string `json:"allowed_methods"`
-		AllowHeaders     []string `json:"allow_headers"`
-		ExposeHeaders    []string `json:"expose_headers"`
-		AllowCredentials bool     `json:"allow_credentials"`
-	} `json:"cors"`
+		Enabled          bool     `json:"enabled" yaml:"enabled"`
+		AllowOrigins     []string `json:"allowed_origins" yaml:"allowed_origins"`
+		AllowedMethods   []string `json:"allowed_methods" yaml:"allowed_methods"`
+		AllowHeaders     []string `json:"allow_headers" yaml:"allow_headers"`
+		ExposeHeaders    []string `json:"expose_headers" yaml:"expose_headers"`
+		AllowCredentials bool     `json:"allow_credentials" yaml:"allow_credentials"`
+	} `json:"cors" yaml:"cors"`
+	Timeout time.Duration `json:"timeout" yaml:"timeout"`
 }
 
 type LoggingConfig struct {

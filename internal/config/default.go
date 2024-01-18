@@ -8,6 +8,7 @@ var defaultConfig = map[string]interface{}{
 	"serve.cors.allow_headers":     []string{"Authorization", "Content-Type", "Cookie"},
 	"serve.cors.expose_headers":    []string{"Content-Type", "Set-Cookie"},
 	"serve.cors.allow_credentials": true,
+	"serve.timeout":                5000,
 
 	"logging.level":       -1,
 	"logging.encoding":    "console",

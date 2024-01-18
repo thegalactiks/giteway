@@ -25,9 +25,9 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-func timeoutMiddleware() gin.HandlerFunc {
+func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
 	return timeout.New(
-		timeout.WithTimeout(1000*time.Millisecond),
+		timeout.WithTimeout(timeoutMS*time.Millisecond),
 		timeout.WithHandler(func(c *gin.Context) {
 			c.Next()
 		}),
@@ -99,7 +99,7 @@ func newServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 			AllowCredentials: cfg.ServeConfig.Cors.AllowCredentials,
 		}))
 	}
-	r.Use(timeoutMiddleware())
+	r.Use(timeoutMiddleware(cfg.ServeConfig.Timeout))
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.ServeConfig.Port),
