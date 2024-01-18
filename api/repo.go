@@ -7,17 +7,12 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
-type GetRepositoriesURI struct {
-	Hosting string `json:"hosting" uri:"hosting"`
-	Owner   string `json:"owner" uri:"owner"`
-}
-
 // Get repositories list
 // @Summary Get repositories list.
 func (h *Handler) GetRepositories(c *gin.Context) {
-	uri := GetRepositoriesURI{}
-	if err := c.BindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+	var uri OwnerUri
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -40,9 +35,9 @@ func (h *Handler) GetRepositories(c *gin.Context) {
 // Get repository details.
 // @Summary Get repository details.
 func (h *Handler) GetRepository(c *gin.Context) {
-	uri := RepoURI{}
-	if err := c.BindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+	var uri RepoURI
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -52,7 +47,7 @@ func (h *Handler) GetRepository(c *gin.Context) {
 		return
 	}
 
-	repo, err := hsting.(hosting.Hosting).GetRepository(c.Request.Context(), uri.Owner, uri.Repo)
+	repo, err := hsting.(hosting.Hosting).GetRepository(c.Request.Context(), uri.Owner, uri.Name)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),

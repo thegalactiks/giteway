@@ -29,8 +29,10 @@ func mapCommit(c *github.RepositoryCommit) *hosting.Commit {
 	return &commit
 }
 
-func (h *HostingGithub) GetCommits(ctx context.Context, repo *hosting.Repository) ([]hosting.Commit, error) {
-	githubCommits, _, err := h.client.Repositories.ListCommits(ctx, repo.Owner, repo.Name, &github.CommitsListOptions{})
+func (h *HostingGithub) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
+	githubCommits, _, err := h.client.Repositories.ListCommits(ctx, repo.Owner, repo.Name, &github.CommitsListOptions{
+		SHA: *opts.Ref,
+	})
 	if err != nil {
 		return nil, err
 	}

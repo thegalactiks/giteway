@@ -43,11 +43,15 @@ type Commit struct {
 	Date      time.Time    `json:"date"`
 }
 
+type GetCommitsOpts struct {
+	Ref *string `json:"ref"`
+}
+
 type Hosting interface {
 	GetRepositories(ctx context.Context, owner string) ([]Repository, error)
 	GetRepository(ctx context.Context, owner string, repo string) (*Repository, error)
 	GetBranches(ctx context.Context, repo *Repository) ([]Branch, error)
-	GetCommits(ctx context.Context, repo *Repository) ([]Commit, error)
+	GetCommits(ctx context.Context, repo *Repository, opts *GetCommitsOpts) ([]Commit, error)
 	GetFiles(ctx context.Context, repo *Repository, path string) (*File, []File, error)
 	GetRawFile(ctx context.Context, repo *Repository, path string) ([]byte, error)
 }

@@ -10,10 +10,15 @@ import (
 // Get commits list
 // @Summary Get commits list.
 func (h *Handler) GetCommits(c *gin.Context) {
-	uri := RepoURI{}
-	if err := c.BindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+	var uri RepoURI
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	var form RefForm
+	if err := c.ShouldBind(&form); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	hsting, exists := c.Get("hosting")
@@ -22,8 +27,11 @@ func (h *Handler) GetCommits(c *gin.Context) {
 		return
 	}
 
-	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Repo}
-	branches, err := hsting.(hosting.Hosting).GetCommits(c.Request.Context(), &repo)
+	commits, err := hsting.(hosting.Hosting).GetCommits(
+		c.Request.Context(),
+		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
+		&hosting.GetCommitsOpts{Ref: form.Ref},
+	)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -31,5 +39,5 @@ func (h *Handler) GetCommits(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, branches)
+	c.JSON(200, commits)
 }

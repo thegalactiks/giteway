@@ -10,9 +10,9 @@ import (
 // Get branches list
 // @Summary Get branches list.
 func (h *Handler) GetBranches(c *gin.Context) {
-	uri := RepoURI{}
-	if err := c.BindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+	var uri RepoURI
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -22,8 +22,7 @@ func (h *Handler) GetBranches(c *gin.Context) {
 		return
 	}
 
-	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Repo}
-	branches, err := hsting.(hosting.Hosting).GetBranches(c.Request.Context(), &repo)
+	branches, err := hsting.(hosting.Hosting).GetBranches(c.Request.Context(), &hosting.Repository{Owner: uri.Owner, Name: uri.Name})
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),

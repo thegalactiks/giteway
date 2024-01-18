@@ -9,16 +9,21 @@ import (
 
 type FileURI struct {
 	RepoURI
-	Path string `json:"path" uri:"path,default=/"`
+	Path string `uri:"path,default=/"`
 }
 
 // Get files list
 // @Summary Get files list.
 func (h *Handler) GetFiles(c *gin.Context) {
-	uri := FileURI{}
-	if err := c.BindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err)
+	var uri FileURI
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	var form RefForm
+	if err := c.ShouldBind(&form); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	hsting, exists := c.Get("hosting")
@@ -27,7 +32,7 @@ func (h *Handler) GetFiles(c *gin.Context) {
 		return
 	}
 
-	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Repo}
+	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Name}
 	switch c.NegotiateFormat(gin.MIMEJSON, RawMimeTypes) {
 	case RawMimeTypes:
 		file, err := hsting.(hosting.Hosting).GetRawFile(c.Request.Context(), &repo, uri.Path)

@@ -27,9 +27,11 @@ func mapCommit(c *gitlab.Commit) *hosting.Commit {
 	return &commit
 }
 
-func (h *HostingGitlab) GetCommits(ctx context.Context, repo *hosting.Repository) ([]hosting.Commit, error) {
+func (h *HostingGitlab) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
 	h.client.Projects.GetProject(ctx, &gitlab.GetProjectOptions{})
-	gitlabCommits, _, err := h.client.Commits.ListCommits(createPid(repo), &gitlab.ListCommitsOptions{})
+	gitlabCommits, _, err := h.client.Commits.ListCommits(createPid(repo), &gitlab.ListCommitsOptions{
+		RefName: opts.Ref,
+	})
 	if err != nil {
 		return nil, err
 	}
