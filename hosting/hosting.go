@@ -47,10 +47,22 @@ type GetCommitsOpts struct {
 	Ref *string `json:"ref"`
 }
 
+type CreateBranchOpts struct {
+	// Ref from where the branch will be created.
+	Ref *string `json:"ref"`
+
+	// SHA from where the branch will be created.
+	SHA *string `json:"sha"`
+
+	// Branch name to create
+	Branch *string `json:"branch"`
+}
+
 type Hosting interface {
 	GetRepositories(ctx context.Context, owner string) ([]Repository, error)
 	GetRepository(ctx context.Context, owner string, repo string) (*Repository, error)
 	GetBranches(ctx context.Context, repo *Repository) ([]Branch, error)
+	CreateBranch(ctx context.Context, repo *Repository, opts *CreateBranchOpts) (*Branch, error)
 	GetCommits(ctx context.Context, repo *Repository, opts *GetCommitsOpts) ([]Commit, error)
 	GetFiles(ctx context.Context, repo *Repository, path string) (*File, []File, error)
 	GetRawFile(ctx context.Context, repo *Repository, path string) ([]byte, error)

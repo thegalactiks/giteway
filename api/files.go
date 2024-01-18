@@ -26,16 +26,16 @@ func (h *Handler) GetFiles(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	hsting, exists := c.Get("hosting")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Unknown error"})
+	hsting, err := getHostingFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Name}
 	switch c.NegotiateFormat(gin.MIMEJSON, RawMimeTypes) {
 	case RawMimeTypes:
-		file, err := hsting.(hosting.Hosting).GetRawFile(c.Request.Context(), &repo, uri.Path)
+		file, err := hsting.GetRawFile(c.Request.Context(), &repo, uri.Path)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 				"error": err.Error(),
@@ -47,7 +47,7 @@ func (h *Handler) GetFiles(c *gin.Context) {
 		return
 
 	default:
-		file, files, err := hsting.(hosting.Hosting).GetFiles(c.Request.Context(), &repo, uri.Path)
+		file, files, err := hsting.GetFiles(c.Request.Context(), &repo, uri.Path)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 				"error": err.Error(),

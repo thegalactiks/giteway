@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/thegalactiks/giteway/hosting"
 )
 
 // Get repositories list
@@ -16,13 +15,13 @@ func (h *Handler) GetRepositories(c *gin.Context) {
 		return
 	}
 
-	hsting, exists := c.Get("hosting")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Unknown error"})
+	hsting, err := getHostingFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	repos, err := hsting.(hosting.Hosting).GetRepositories(c.Request.Context(), uri.Owner)
+	repos, err := hsting.GetRepositories(c.Request.Context(), uri.Owner)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),
@@ -41,13 +40,13 @@ func (h *Handler) GetRepository(c *gin.Context) {
 		return
 	}
 
-	hsting, exists := c.Get("hosting")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Unknown error"})
+	hsting, err := getHostingFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	repo, err := hsting.(hosting.Hosting).GetRepository(c.Request.Context(), uri.Owner, uri.Name)
+	repo, err := hsting.GetRepository(c.Request.Context(), uri.Owner, uri.Name)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
 			"error": err.Error(),

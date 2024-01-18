@@ -21,13 +21,13 @@ func (h *Handler) GetCommits(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	hsting, exists := c.Get("hosting")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Unknown error"})
+	hsting, err := getHostingFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	commits, err := hsting.(hosting.Hosting).GetCommits(
+	commits, err := hsting.GetCommits(
 		c.Request.Context(),
 		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
 		&hosting.GetCommitsOpts{Ref: form.Ref},

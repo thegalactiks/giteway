@@ -1,8 +1,7 @@
-package middlewares
+package api
 
 import (
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +26,7 @@ func getTokenFromContext(c *gin.Context) (*string, error) {
 	return &token, nil
 }
 
-func getHostingFromURLParam(c *gin.Context) (hosting.Hosting, error) {
+func getHostingFromContext(c *gin.Context) (hosting.Hosting, error) {
 	token, err := getTokenFromContext(c)
 	if err != nil {
 		return nil, err
@@ -46,15 +45,4 @@ func getHostingFromURLParam(c *gin.Context) (hosting.Hosting, error) {
 	}
 
 	return nil, errors.New("unknown hosting service")
-}
-
-func HostingMiddleware(c *gin.Context) {
-	h, err := getHostingFromURLParam(c)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
-	c.Set("hosting", h)
-	c.Next()
 }

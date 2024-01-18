@@ -2,6 +2,7 @@ package gitlab
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/thegalactiks/giteway/hosting"
 	"github.com/xanzy/go-gitlab"
@@ -29,4 +30,32 @@ func (h *HostingGitlab) GetBranches(ctx context.Context, repo *hosting.Repositor
 	}
 
 	return branches, nil
+}
+
+func (h *HostingGitlab) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
+	pid := createPid(repo)
+
+	var ref *string
+	if opts.Ref != nil {
+		ref = opts.Ref
+	} else if opts.SHA != nil {
+		ref = opts.SHA
+	}
+
+	if ref == nil {
+		gitlabRepo, _, err := h.client.Projects.GetProject(pid, &gitlab.GetProjectOptions{})
+		if err != nil {
+			return nil, err
+		}
+
+		defaultBranchRef := fmt.Sprintf("heads/%v", gitlabRepo.DefaultBranch)
+		ref = &defaultBranchRef
+	}
+
+	gitlabBranch, _, err := h.client.Branches.CreateBranch(pid, &gitlab.CreateBranchOptions{Ref: ref, Branch: opts.Branch})
+	if err != nil {
+		return nil, err
+	}
+
+	return mapBranch(gitlabBranch), nil
 }
