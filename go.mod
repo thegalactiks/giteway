@@ -9,7 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/go-github/v58 v58.0.0
-	github.com/knadh/koanf v1.5.0
+	github.com/knadh/koanf/v2 v2.0.1
 	github.com/magiconair/properties v1.8.7
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.8.4
