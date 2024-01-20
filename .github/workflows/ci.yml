@@ -30,8 +30,5 @@ jobs:
       - name: Build
         run: go build -v ./...
 
-      # - name: Test
-      #   run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
-
-      # - name: Upload coverage reports to Codecov
-      #   uses: codecov/codecov-action@v3
+      - name: Test
+        run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
