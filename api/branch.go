@@ -9,28 +9,26 @@ import (
 
 // Get branches list
 // @Summary Get branches list.
-func (h *Handler) GetBranches(c *gin.Context) {
+func (h *Handler) GetBranches(ctx *gin.Context) {
 	var uri RepoURI
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	branches, err := hsting.GetBranches(c.Request.Context(), &hosting.Repository{Owner: uri.Owner, Name: uri.Name})
+	branches, err := hsting.GetBranches(ctx.Request.Context(), &hosting.Repository{Owner: uri.Owner, Name: uri.Name})
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 		return
 	}
 
-	c.JSON(200, branches)
+	ctx.JSON(http.StatusOK, branches)
 }
 
 type CreateBranchForm struct {
@@ -39,40 +37,38 @@ type CreateBranchForm struct {
 
 // Create a branch with name
 // @Summary Create a branch with name.
-func (h *Handler) CreateBranch(c *gin.Context) {
+func (h *Handler) CreateBranch(ctx *gin.Context) {
 	var uri RepoURI
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	var form CreateBranchForm
-	if err := c.ShouldBind(&form); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBind(&form); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	branch, err := hsting.CreateBranch(
-		c.Request.Context(),
+		ctx.Request.Context(),
 		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
 		&hosting.CreateBranchOpts{
 			Branch: &form.Name,
 		},
 	)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 		return
 	}
 
-	c.JSON(201, branch)
+	ctx.JSON(http.StatusCreated, branch)
 }
 
 type DeleteBranchUri struct {
@@ -82,32 +78,30 @@ type DeleteBranchUri struct {
 
 // Delete a branch by name
 // @Summary Delete a branch by name.
-func (h *Handler) DeleteBranch(c *gin.Context) {
+func (h *Handler) DeleteBranch(ctx *gin.Context) {
 	var uri DeleteBranchUri
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	err = hsting.DeleteBranch(
-		c.Request.Context(),
+		ctx.Request.Context(),
 		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
 		&hosting.Branch{
 			Name: uri.Branch,
 		},
 	)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 		return
 	}
 
-	c.Status(204)
+	ctx.Status(http.StatusNoContent)
 }

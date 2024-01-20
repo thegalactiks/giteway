@@ -28,11 +28,11 @@ import (
 func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
 	return timeout.New(
 		timeout.WithTimeout(timeoutMS*time.Millisecond),
-		timeout.WithHandler(func(c *gin.Context) {
-			c.Next()
+		timeout.WithHandler(func(ctx *gin.Context) {
+			ctx.Next()
 		}),
-		timeout.WithResponse(func(c *gin.Context) {
-			c.String(http.StatusRequestTimeout, "timeout")
+		timeout.WithResponse(func(ctx *gin.Context) {
+			ctx.String(http.StatusRequestTimeout, "timeout")
 		}),
 	)
 }

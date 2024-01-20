@@ -9,7 +9,7 @@ import (
 
 func mapCommit(c *gitlab.Commit) *hosting.Commit {
 	commit := hosting.Commit{
-		SHA: c.ID,
+		SHA: &c.ID,
 		Author: hosting.CommitAuthor{
 			Date:  *c.AuthoredDate,
 			Name:  c.AuthorName,

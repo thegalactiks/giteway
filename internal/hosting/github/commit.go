@@ -17,13 +17,16 @@ func mapCommitAuthor(a *github.CommitAuthor) *hosting.CommitAuthor {
 	return &author
 }
 
-func mapCommit(c *github.RepositoryCommit) *hosting.Commit {
+func mapCommit(c *github.Commit) *hosting.Commit {
 	commit := hosting.Commit{
-		SHA:       c.GetSHA(),
-		Author:    *mapCommitAuthor(c.GetCommit().GetAuthor()),
-		Committer: *mapCommitAuthor(c.GetCommit().GetCommitter()),
-		Message:   c.GetCommit().GetMessage(),
-		Date:      c.GetCommit().GetCommitter().GetDate().Time,
+		SHA: c.SHA,
+		Tree: hosting.CommitTree{
+			SHA: c.GetTree().GetSHA(),
+		},
+		Author:    *mapCommitAuthor(c.GetAuthor()),
+		Committer: *mapCommitAuthor(c.GetCommitter()),
+		Message:   c.GetMessage(),
+		Date:      c.GetCommitter().GetDate().Time,
 	}
 
 	return &commit
@@ -39,9 +42,18 @@ func (h *HostingGithub) GetCommits(ctx context.Context, repo *hosting.Repository
 
 	var commits []hosting.Commit
 	for _, c := range githubCommits {
-		hostingCommit := mapCommit(c)
+		hostingCommit := mapCommit(c.GetCommit())
 		commits = append(commits, *hostingCommit)
 	}
 
 	return commits, nil
+}
+
+func (h *HostingGithub) GetCommit(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) (*hosting.Commit, error) {
+	githubCommit, _, err := h.client.Repositories.GetCommit(ctx, repo.Owner, repo.Name, *opts.Ref, &github.ListOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	return mapCommit(githubCommit.GetCommit()), nil
 }

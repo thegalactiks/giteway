@@ -7,6 +7,7 @@ require (
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-contrib/timeout v0.0.6
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/google/go-github/v58 v58.0.0
 	github.com/knadh/koanf v1.5.0
 	github.com/magiconair/properties v1.8.7
@@ -73,6 +74,7 @@ require (
 	golang.org/x/tools v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

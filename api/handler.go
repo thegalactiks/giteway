@@ -25,7 +25,9 @@ type RepoURI struct {
 }
 
 type RefForm struct {
-	Ref *string `form:"ref,default=main"`
+	Ref    *string `form:"ref,omitempty"`
+	SHA    *string `form:"sha,omitempty"`
+	Branch string  `form:"branch,default=main"`
 }
 
 func NewHandler(c *config.Config, e *gin.Engine) *Handler {
@@ -47,4 +49,7 @@ func Routes(r *gin.Engine, h *Handler) {
 	gitRepoApi.GET("/commits", h.GetCommits)
 	gitRepoApi.GET("/files", h.GetFiles)
 	gitRepoApi.GET("/files/*path", h.GetFiles)
+	gitRepoApi.POST("/files/*path", h.CreateFile)
+	gitRepoApi.PUT("/files/*path", h.UpdateFile)
+	gitRepoApi.DELETE("/files/*path", h.DeleteFile)
 }

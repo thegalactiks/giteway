@@ -9,35 +9,33 @@ import (
 
 // Get commits list
 // @Summary Get commits list.
-func (h *Handler) GetCommits(c *gin.Context) {
+func (h *Handler) GetCommits(ctx *gin.Context) {
 	var uri RepoURI
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	var form RefForm
-	if err := c.ShouldBind(&form); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBind(&form); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
 	commits, err := hsting.GetCommits(
-		c.Request.Context(),
+		ctx.Request.Context(),
 		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
 		&hosting.GetCommitsOpts{Ref: form.Ref},
 	)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 		return
 	}
 
-	c.JSON(200, commits)
+	ctx.JSON(http.StatusOK, commits)
 }

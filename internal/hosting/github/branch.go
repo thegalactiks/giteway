@@ -12,7 +12,7 @@ import (
 func mapBranch(b *github.Branch) *hosting.Branch {
 	branch := hosting.Branch{
 		Name:   b.GetName(),
-		Commit: mapCommit(b.GetCommit()),
+		Commit: mapCommit(b.GetCommit().GetCommit()),
 	}
 
 	return &branch
@@ -22,7 +22,7 @@ func mapBranchRef(r *github.Reference) *hosting.Branch {
 	branch := hosting.Branch{
 		Name: r.GetRef(),
 		Commit: &hosting.Commit{
-			SHA: r.GetObject().GetSHA(),
+			SHA: r.GetObject().SHA,
 		},
 	}
 

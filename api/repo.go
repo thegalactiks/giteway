@@ -8,51 +8,47 @@ import (
 
 // Get repositories list
 // @Summary Get repositories list.
-func (h *Handler) GetRepositories(c *gin.Context) {
+func (h *Handler) GetRepositories(ctx *gin.Context) {
 	var uri OwnerUri
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	repos, err := hsting.GetRepositories(c.Request.Context(), uri.Owner)
+	repos, err := hsting.GetRepositories(ctx.Request.Context(), uri.Owner)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 	}
 
-	c.JSON(http.StatusOK, repos)
+	ctx.JSON(http.StatusOK, repos)
 }
 
 // Get repository details.
 // @Summary Get repository details.
-func (h *Handler) GetRepository(c *gin.Context) {
+func (h *Handler) GetRepository(ctx *gin.Context) {
 	var uri RepoURI
-	if err := c.ShouldBindUri(&uri); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(c)
+	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		respondWithError(ctx, http.StatusBadRequest, err)
 		return
 	}
 
-	repo, err := hsting.GetRepository(c.Request.Context(), uri.Owner, uri.Name)
+	repo, err := hsting.GetRepository(ctx.Request.Context(), uri.Owner, uri.Name)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
-			"error": err.Error(),
-		})
+		respondWithError(ctx, http.StatusBadGateway, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, repo)
+	ctx.JSON(http.StatusOK, repo)
 }

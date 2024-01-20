@@ -3,6 +3,7 @@ package github
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/google/go-github/v58/github"
 	"github.com/thegalactiks/giteway/hosting"
@@ -14,15 +15,29 @@ func mapFile(c *github.RepositoryContent) *hosting.File {
 		size = c.Size
 	}
 
+	var encoding hosting.Encoding
+	switch c.GetEncoding() {
+	case "base64":
+		encoding = hosting.Base64Encoding
+	case "none":
+		encoding = hosting.NoneEncoding
+	}
+
 	file := hosting.File{
+		ID:       c.GetSHA(),
 		Type:     c.GetType(),
-		Encoding: c.Encoding,
+		Encoding: &encoding,
+		Content:  c.Content,
 		Size:     size,
 		Name:     c.GetName(),
 		Path:     c.GetPath(),
 	}
 
 	return &file
+}
+
+func formatPath(path string) string {
+	return strings.TrimLeft(path, "/")
 }
 
 func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, path string) (*hosting.File, []hosting.File, error) {
@@ -44,7 +59,7 @@ func (h *HostingGithub) GetFiles(ctx context.Context, repo *hosting.Repository, 
 	return nil, files, nil
 }
 
-func (h *HostingGithub) GetRawFile(ctx context.Context, repo *hosting.Repository, path string) ([]byte, error) {
+func (h *HostingGithub) GetRawFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.GetFileOpts) ([]byte, error) {
 	fileContent, _, _, err := h.client.Repositories.GetContents(ctx, repo.Owner, repo.Name, path, &github.RepositoryContentGetOptions{})
 	if err != nil {
 		return nil, err
@@ -60,4 +75,82 @@ func (h *HostingGithub) GetRawFile(ctx context.Context, repo *hosting.Repository
 	}
 
 	return []byte(c), nil
+}
+
+func (h *HostingGithub) CreateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.CreateFileOpts) (*hosting.File, *hosting.Commit, error) {
+	branch := opts.Branch
+	if opts.Ref != nil {
+		branch = opts.Ref
+	}
+
+	githubContentResponse, _, err := h.client.Repositories.CreateFile(ctx, repo.Owner, repo.Name, formatPath(file.Path), &github.RepositoryContentFileOptions{
+		Branch:  branch,
+		Content: []byte(*file.Content),
+		Message: &opts.Commit.Message,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return mapFile(githubContentResponse.GetContent()), mapCommit(&githubContentResponse.Commit), nil
+}
+
+func (h *HostingGithub) getFileSHA(ctx context.Context, repo *hosting.Repository, path string) (*string, error) {
+	file, _, err := h.GetFiles(ctx, repo, path)
+	if err != nil {
+		return nil, err
+	}
+
+	return &file.ID, nil
+}
+
+func (h *HostingGithub) UpdateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.UpdateFileOpts) (*hosting.File, *hosting.Commit, error) {
+	path := formatPath(file.Path)
+
+	branch := opts.Branch
+	if opts.Ref != nil {
+		branch = opts.Ref
+	}
+
+	sha, err := h.getFileSHA(ctx, repo, path)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	githubContentResponse, _, err := h.client.Repositories.UpdateFile(ctx, repo.Owner, repo.Name, path, &github.RepositoryContentFileOptions{
+		Branch:  branch,
+		SHA:     sha,
+		Content: []byte(*file.Content),
+		Message: &opts.Message,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return mapFile(githubContentResponse.GetContent()), mapCommit(&githubContentResponse.Commit), nil
+}
+
+func (h *HostingGithub) DeleteFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.DeleteFileOpts) (*hosting.Commit, error) {
+	path = formatPath(path)
+
+	branch := opts.Branch
+	if opts.Ref != nil {
+		branch = opts.Ref
+	}
+
+	sha, err := h.getFileSHA(ctx, repo, path)
+	if err != nil {
+		return nil, err
+	}
+
+	githubContentResponse, _, err := h.client.Repositories.DeleteFile(ctx, repo.Owner, repo.Name, formatPath(path), &github.RepositoryContentFileOptions{
+		Branch:  branch,
+		SHA:     sha,
+		Message: &opts.Commit.Message,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return mapCommit(&githubContentResponse.Commit), nil
 }
