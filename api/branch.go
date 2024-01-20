@@ -72,5 +72,42 @@ func (h *Handler) CreateBranch(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, branch)
+	c.JSON(201, branch)
+}
+
+type DeleteBranchUri struct {
+	RepoURI
+	Branch string `uri:"branch" binding:"required"`
+}
+
+// Delete a branch by name
+// @Summary Delete a branch by name.
+func (h *Handler) DeleteBranch(c *gin.Context) {
+	var uri DeleteBranchUri
+	if err := c.ShouldBindUri(&uri); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	hsting, err := getHostingFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = hsting.DeleteBranch(
+		c.Request.Context(),
+		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
+		&hosting.Branch{
+			Name: uri.Branch,
+		},
+	)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadGateway, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.Status(204)
 }

@@ -59,3 +59,9 @@ func (h *HostingGitlab) CreateBranch(ctx context.Context, repo *hosting.Reposito
 
 	return mapBranch(gitlabBranch), nil
 }
+
+func (h *HostingGitlab) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
+	_, err := h.client.Branches.DeleteBranch(createPid(repo), branch.Name)
+
+	return err
+}

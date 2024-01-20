@@ -29,6 +29,10 @@ func mapBranchRef(r *github.Reference) *hosting.Branch {
 	return &branch
 }
 
+func getBranchRefFromName(name string) string {
+	return fmt.Sprintf("heads/%v", strings.TrimPrefix(name, "heads/"))
+}
+
 func (h *HostingGithub) GetBranches(ctx context.Context, repo *hosting.Repository) ([]hosting.Branch, error) {
 	githubBranches, _, err := h.client.Repositories.ListBranches(ctx, repo.Owner, repo.Name, &github.BranchListOptions{})
 	if err != nil {
@@ -60,7 +64,7 @@ func (h *HostingGithub) CreateBranch(ctx context.Context, repo *hosting.Reposito
 				return nil, err
 			}
 
-			ref = fmt.Sprintf("heads/%v", githubRepo.GetDefaultBranch())
+			ref = getBranchRefFromName(githubRepo.GetDefaultBranch())
 		}
 
 		commit, _, err := h.client.Git.GetRef(ctx, repo.Owner, repo.Name, ref)
@@ -71,7 +75,7 @@ func (h *HostingGithub) CreateBranch(ctx context.Context, repo *hosting.Reposito
 		githubRef.Object = commit.Object
 	}
 
-	branchRef := fmt.Sprintf("heads/%v", strings.TrimPrefix(*opts.Branch, "heads/"))
+	branchRef := getBranchRefFromName(*opts.Branch)
 	githubRef.Ref = &branchRef
 
 	githubBranchRef, _, err := h.client.Git.CreateRef(ctx, repo.Owner, repo.Name, &githubRef)
@@ -80,4 +84,11 @@ func (h *HostingGithub) CreateBranch(ctx context.Context, repo *hosting.Reposito
 	}
 
 	return mapBranchRef(githubBranchRef), nil
+}
+
+func (h *HostingGithub) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
+	branchRef := getBranchRefFromName(branch.Name)
+	_, err := h.client.Git.DeleteRef(ctx, repo.Owner, repo.Name, branchRef)
+
+	return err
 }

@@ -43,6 +43,7 @@ func Routes(r *gin.Engine, h *Handler) {
 	gitRepoApi := r.Group("/repos/:hosting/:owner/:name")
 	gitRepoApi.GET("/branches", h.GetBranches)
 	gitRepoApi.POST("/branches", h.CreateBranch)
+	gitRepoApi.DELETE("/branches/:branch", h.DeleteBranch)
 	gitRepoApi.GET("/commits", h.GetCommits)
 	gitRepoApi.GET("/files", h.GetFiles)
 	gitRepoApi.GET("/files/*path", h.GetFiles)
