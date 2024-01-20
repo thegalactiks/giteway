@@ -1,6 +1,6 @@
 module github.com/thegalactiks/giteway
 
-go 1.21.1
+go 1.21.6
 
 require (
 	github.com/gin-contrib/cors v1.5.0
@@ -16,7 +16,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/files/v2 v2.0.0
 	github.com/swaggo/gin-swagger v1.6.0
-	github.com/xanzy/go-gitlab v0.95.2
+	github.com/xanzy/go-gitlab v0.96.0
 	go.uber.org/fx v1.20.1
 	go.uber.org/zap v1.26.0
 )
