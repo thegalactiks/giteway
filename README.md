@@ -24,4 +24,4 @@ Detailed API documentation can be found here *(todo)*.
 
 ## License
 
-This project is licensed under the [MIT License](./LICENSE).
+This project is licensed under the [MIT License](https://github.com/thegalactiks/giteway/LICENSE) @ [Galactiks](https://www.galactiks.com/).
