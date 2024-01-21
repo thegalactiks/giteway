@@ -35,6 +35,10 @@ changelog:
 
 dockers:
   - image_templates:
+      - "galactiks/giteway:{{ .Tag }}"
+      - "galactiks/giteway:v{{ .Major }}"
+      - "galactiks/giteway:v{{ .Major }}.{{ .Minor }}"
+      - "galactiks/giteway:latest"
       - "ghcr.io/thegalactiks/giteway:{{ .Tag }}"
       - "ghcr.io/thegalactiks/giteway:v{{ .Major }}"
       - "ghcr.io/thegalactiks/giteway:v{{ .Major }}.{{ .Minor }}"
