@@ -13,12 +13,12 @@ type CommitTree struct {
 }
 
 type Commit struct {
-	SHA       *string      `json:"sha,omitempty"`
-	Tree      CommitTree   `json:"tree,omitempty"`
-	Author    CommitAuthor `json:"author"`
-	Committer CommitAuthor `json:"committer"`
-	Message   string       `json:"message"`
-	Date      time.Time    `json:"date"`
+	SHA       string        `json:"sha"`
+	Tree      *CommitTree   `json:"tree,omitempty"`
+	Author    *CommitAuthor `json:"author,omitempty"`
+	Committer *CommitAuthor `json:"committer,omitempty"`
+	Message   *string       `json:"message,omitempty"`
+	Date      *time.Time    `json:"date,omitempty"`
 }
 
 type GetCommitsOpts struct {

@@ -44,7 +44,7 @@ func formatPath(path string) string {
 	return strings.TrimLeft(path, "/")
 }
 
-func (h *HostingGitlab) GetFiles(ctx context.Context, repo *hosting.Repository, path string) (*hosting.File, []hosting.File, error) {
+func (h *GitlabService) GetFiles(ctx context.Context, repo *hosting.Repository, path string) (*hosting.File, []hosting.File, error) {
 	pid := createPid(repo)
 	pathWithoutSlash := strings.TrimLeft(path, "/")
 	ref := "master"
@@ -76,7 +76,7 @@ func (h *HostingGitlab) GetFiles(ctx context.Context, repo *hosting.Repository, 
 	return nil, files, nil
 }
 
-func (h *HostingGitlab) GetRawFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.GetFileOpts) ([]byte, error) {
+func (h *GitlabService) GetRawFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.GetFileOpts) ([]byte, error) {
 	pid := createPid(repo)
 
 	file, _, err := h.client.RepositoryFiles.GetRawFile(pid, formatPath(path), &gitlab.GetRawFileOptions{
@@ -86,7 +86,7 @@ func (h *HostingGitlab) GetRawFile(ctx context.Context, repo *hosting.Repository
 	return file, err
 }
 
-func (h *HostingGitlab) CreateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.CreateFileOpts) (*hosting.File, *hosting.Commit, error) {
+func (h *GitlabService) CreateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.CreateFileOpts) (*hosting.File, *hosting.Commit, error) {
 	pid := createPid(repo)
 	branch := opts.Branch
 	if opts.Ref != nil {
@@ -97,7 +97,7 @@ func (h *HostingGitlab) CreateFile(ctx context.Context, repo *hosting.Repository
 		Branch:        branch,
 		Encoding:      file.GetEncoding(),
 		Content:       file.Content,
-		CommitMessage: &opts.Commit.Message,
+		CommitMessage: opts.Commit.Message,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -116,7 +116,7 @@ func (h *HostingGitlab) CreateFile(ctx context.Context, repo *hosting.Repository
 	return &createdFile, &lastCommit, nil
 }
 
-func (h *HostingGitlab) UpdateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.UpdateFileOpts) (*hosting.File, *hosting.Commit, error) {
+func (h *GitlabService) UpdateFile(ctx context.Context, repo *hosting.Repository, file *hosting.File, opts *hosting.UpdateFileOpts) (*hosting.File, *hosting.Commit, error) {
 	pid := createPid(repo)
 	branch := opts.Branch
 	if opts.Ref != nil {
@@ -127,7 +127,7 @@ func (h *HostingGitlab) UpdateFile(ctx context.Context, repo *hosting.Repository
 		Branch:        branch,
 		Encoding:      file.GetEncoding(),
 		Content:       file.Content,
-		CommitMessage: &opts.Commit.Message,
+		CommitMessage: opts.Commit.Message,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -146,7 +146,7 @@ func (h *HostingGitlab) UpdateFile(ctx context.Context, repo *hosting.Repository
 	return &createdFile, &lastCommit, nil
 }
 
-func (h *HostingGitlab) DeleteFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.DeleteFileOpts) (*hosting.Commit, error) {
+func (h *GitlabService) DeleteFile(ctx context.Context, repo *hosting.Repository, path string, opts *hosting.DeleteFileOpts) (*hosting.Commit, error) {
 	pid := createPid(repo)
 	branch := opts.Branch
 	if opts.Ref != nil {
@@ -155,7 +155,7 @@ func (h *HostingGitlab) DeleteFile(ctx context.Context, repo *hosting.Repository
 
 	_, err := h.client.RepositoryFiles.DeleteFile(pid, formatPath(path), &gitlab.DeleteFileOptions{
 		Branch:        branch,
-		CommitMessage: &opts.Commit.Message,
+		CommitMessage: opts.Commit.Message,
 	})
 	if err != nil {
 		return nil, err

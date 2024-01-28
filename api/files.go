@@ -22,24 +22,22 @@ type FileContentForm struct {
 	Commit   CommitForm `form:"commit,omitempty" json:"commit,omitempty"`
 }
 
-// Get files list
-// @Summary Get files list.
 func (h *Handler) GetFiles(ctx *gin.Context) {
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, "validation failed", err)
 		return
 	}
 
 	var form RefForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, "validation failed", err)
 		return
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, "unknown git provider", err)
 		return
 	}
 
@@ -48,7 +46,7 @@ func (h *Handler) GetFiles(ctx *gin.Context) {
 	case RawMimeTypes:
 		file, err := hsting.GetRawFile(ctx.Request.Context(), &repo, uri.Path, &hosting.GetFileOpts{})
 		if err != nil {
-			respondWithError(ctx, http.StatusBadGateway, err)
+			WriteErr(ctx, http.StatusBadGateway, "error from hosting service", err)
 			return
 		}
 
@@ -58,7 +56,7 @@ func (h *Handler) GetFiles(ctx *gin.Context) {
 	default:
 		file, files, err := hsting.GetFiles(ctx.Request.Context(), &repo, uri.Path)
 		if err != nil {
-			respondWithError(ctx, http.StatusBadGateway, err)
+			WriteErr(ctx, http.StatusBadGateway, "error from hosting service", err)
 			return
 		}
 
@@ -71,24 +69,22 @@ func (h *Handler) GetFiles(ctx *gin.Context) {
 	}
 }
 
-// Create file
-// @Summary Create file.
 func (h *Handler) CreateFile(ctx *gin.Context) {
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form FileContentForm
 	if err := ctx.ShouldBindJSON(&form); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -101,7 +97,7 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -115,35 +111,33 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
 		Commit: hosting.Commit{
-			Message: message,
+			Message: &message,
 		},
 	})
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	ctx.JSON(http.StatusCreated, commit)
 }
 
-// Update file
-// @Summary Update file.
 func (h *Handler) UpdateFile(ctx *gin.Context) {
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form FileContentForm
 	if err := ctx.ShouldBindJSON(&form); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -156,7 +150,7 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -170,35 +164,33 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
 		Commit: hosting.Commit{
-			Message: message,
+			Message: &message,
 		},
 	})
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	ctx.JSON(http.StatusOK, commit)
 }
 
-// Delete file
-// @Summary Delete file.
 func (h *Handler) DeleteFile(ctx *gin.Context) {
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -208,11 +200,11 @@ func (h *Handler) DeleteFile(ctx *gin.Context) {
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
 		Commit: hosting.Commit{
-			Message: message,
+			Message: &message,
 		},
 	})
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 

@@ -11,8 +11,13 @@ import (
 
 func mapBranch(b *github.Branch) *hosting.Branch {
 	branch := hosting.Branch{
-		Name:   b.GetName(),
-		Commit: mapCommit(b.GetCommit().GetCommit()),
+		Name: b.GetName(),
+	}
+	c := b.Commit
+	if c != nil {
+		branch.Commit = &hosting.Commit{
+			SHA: c.GetSHA(),
+		}
 	}
 
 	return &branch
@@ -22,7 +27,7 @@ func mapBranchRef(r *github.Reference) *hosting.Branch {
 	branch := hosting.Branch{
 		Name: r.GetRef(),
 		Commit: &hosting.Commit{
-			SHA: r.GetObject().SHA,
+			SHA: r.GetObject().GetSHA(),
 		},
 	}
 
@@ -33,7 +38,7 @@ func getBranchRefFromName(name string) string {
 	return fmt.Sprintf("heads/%v", strings.TrimPrefix(name, "heads/"))
 }
 
-func (h *HostingGithub) GetBranches(ctx context.Context, repo *hosting.Repository) ([]hosting.Branch, error) {
+func (h *GithubService) GetBranches(ctx context.Context, repo *hosting.Repository) ([]hosting.Branch, error) {
 	githubBranches, _, err := h.client.Repositories.ListBranches(ctx, repo.Owner, repo.Name, &github.BranchListOptions{})
 	if err != nil {
 		return nil, err
@@ -48,7 +53,7 @@ func (h *HostingGithub) GetBranches(ctx context.Context, repo *hosting.Repositor
 	return branches, nil
 }
 
-func (h *HostingGithub) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
+func (h *GithubService) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
 	var githubRef = github.Reference{}
 	if opts.SHA != nil {
 		githubRef.Object = &github.GitObject{
@@ -86,7 +91,7 @@ func (h *HostingGithub) CreateBranch(ctx context.Context, repo *hosting.Reposito
 	return mapBranchRef(githubBranchRef), nil
 }
 
-func (h *HostingGithub) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
+func (h *GithubService) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
 	branchRef := getBranchRefFromName(branch.Name)
 	_, err := h.client.Git.DeleteRef(ctx, repo.Owner, repo.Name, branchRef)
 

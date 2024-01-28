@@ -5,14 +5,14 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
-type HostingGithub struct {
+type GithubService struct {
 	client   *github.Client
 	hasToken bool
 }
 
-var _ hosting.Hosting = (*HostingGithub)(nil)
+var _ hosting.GitHostingService = (*GithubService)(nil)
 
-func New(token *string) (*HostingGithub, error) {
+func NewGithubService(token *string) (*GithubService, error) {
 	hasToken := false
 	client := github.NewClient(nil)
 	if token != nil {
@@ -20,7 +20,7 @@ func New(token *string) (*HostingGithub, error) {
 		hasToken = true
 	}
 
-	return &HostingGithub{
+	return &GithubService{
 		client:   client,
 		hasToken: hasToken,
 	}, nil

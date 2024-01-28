@@ -17,8 +17,6 @@ import (
 	"github.com/gin-contrib/timeout"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
@@ -58,15 +56,12 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 				fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 					return &fxevent.ZapLogger{Logger: log.Named("fx")}
 				}),
-				fx.StopTimeout(30*time.Second),
 				fx.Invoke(
 					printAppInfo,
 				),
 				fx.Provide(
 					api.NewHandler,
-
-					// server
-					newServer,
+					newHTTPServer,
 				),
 				fx.Invoke(
 					api.Routes,
@@ -80,9 +75,7 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 	return serveCmd
 }
 
-// @title Giteway API
-// @version 0.1
-func newServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
+func newHTTPServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 	r := gin.New()
 
@@ -100,6 +93,7 @@ func newServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 		}))
 	}
 	r.Use(timeoutMiddleware(cfg.ServeConfig.Timeout))
+	r.Use(gin.Recovery())
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.ServeConfig.Port),
@@ -120,7 +114,6 @@ func newServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 			return srv.Shutdown(ctx)
 		},
 	})
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
 }
 

@@ -17,7 +17,7 @@ func mapBranch(b *gitlab.Branch) *hosting.Branch {
 	return &branch
 }
 
-func (h *HostingGitlab) GetBranches(ctx context.Context, repo *hosting.Repository) ([]hosting.Branch, error) {
+func (h *GitlabService) GetBranches(ctx context.Context, repo *hosting.Repository) ([]hosting.Branch, error) {
 	gitlabBranches, _, err := h.client.Branches.ListBranches(createPid(repo), &gitlab.ListBranchesOptions{})
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (h *HostingGitlab) GetBranches(ctx context.Context, repo *hosting.Repositor
 	return branches, nil
 }
 
-func (h *HostingGitlab) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
+func (h *GitlabService) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
 	pid := createPid(repo)
 
 	var ref *string
@@ -60,7 +60,7 @@ func (h *HostingGitlab) CreateBranch(ctx context.Context, repo *hosting.Reposito
 	return mapBranch(gitlabBranch), nil
 }
 
-func (h *HostingGitlab) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
+func (h *GitlabService) DeleteBranch(ctx context.Context, repo *hosting.Repository, branch *hosting.Branch) error {
 	_, err := h.client.Branches.DeleteBranch(createPid(repo), branch.Name)
 
 	return err

@@ -2,29 +2,13 @@ package api
 
 import (
 	"errors"
-	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator"
+	"github.com/thegalactiks/giteway/github"
+	"github.com/thegalactiks/giteway/gitlab"
 	"github.com/thegalactiks/giteway/hosting"
-	"github.com/thegalactiks/giteway/internal/hosting/github"
-	"github.com/thegalactiks/giteway/internal/hosting/gitlab"
 )
-
-func handleValidationErrors(c *gin.Context, errs validator.ValidationErrors) {
-	errorMessages := make([]string, len(errs))
-	for i, err := range errs {
-		errorMessages[i] = fmt.Sprintf("%s is %s", err.Field(), err.Tag())
-	}
-
-	c.JSON(http.StatusBadRequest, gin.H{"validation_error": errorMessages})
-}
-
-func respondWithError(ctx *gin.Context, code int, err error) {
-	ctx.JSON(code, gin.H{"error": err.Error()})
-}
 
 func getTokenFromContext(ctx *gin.Context) (*string, error) {
 	authHeader := ctx.GetHeader("Authorization")
@@ -42,7 +26,7 @@ func getTokenFromContext(ctx *gin.Context) (*string, error) {
 	return &token, nil
 }
 
-func getHostingFromContext(ctx *gin.Context) (hosting.Hosting, error) {
+func getHostingFromContext(ctx *gin.Context) (hosting.GitHostingService, error) {
 	token, err := getTokenFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -50,14 +34,14 @@ func getHostingFromContext(ctx *gin.Context) (hosting.Hosting, error) {
 
 	switch ctx.Param("hosting") {
 	case "github.com":
-		return github.New(token)
+		return github.NewGithubService(token)
 
 	case "gitlab.com":
 		if token == nil || *token == "" {
 			return nil, errors.New("gitlab require a token")
 		}
 
-		return gitlab.New(*token)
+		return gitlab.NewGitlabService(*token)
 	}
 
 	return nil, errors.New("unknown hosting service")

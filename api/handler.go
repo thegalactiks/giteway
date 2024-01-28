@@ -30,11 +30,8 @@ type RefForm struct {
 	Branch string  `form:"branch,default=main"`
 }
 
-func NewHandler(c *config.Config, e *gin.Engine) *Handler {
-	return &Handler{
-		c: c,
-		e: e,
-	}
+func NewHandler(cfg *config.Config, e *gin.Engine) *Handler {
+	return &Handler{cfg, e}
 }
 
 func Routes(r *gin.Engine, h *Handler) {

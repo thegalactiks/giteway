@@ -21,7 +21,7 @@ func mapProject(owner string, p *gitlab.Project) *hosting.Repository {
 	return &repo
 }
 
-func (h *HostingGitlab) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
+func (h *GitlabService) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
 	gitlabProjects, _, err := h.client.Groups.ListGroupProjects(owner, &gitlab.ListGroupProjectsOptions{})
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (h *HostingGitlab) GetRepositories(ctx context.Context, owner string) ([]ho
 	return repos, nil
 }
 
-func (h *HostingGitlab) GetRepository(ctx context.Context, owner string, repo string) (*hosting.Repository, error) {
+func (h *GitlabService) GetRepository(ctx context.Context, owner string, repo string) (*hosting.Repository, error) {
 	gitlabProject, _, err := h.client.Projects.GetProject(createPid(&hosting.Repository{
 		Owner: owner,
 		Name:  repo,
