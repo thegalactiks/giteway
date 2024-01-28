@@ -10,7 +10,8 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceRoot}",
-            "args": ["serve"]
+            "args": ["serve"],
+            "envFile": "${workspaceRoot}/.env"
         }
     ]
 }
