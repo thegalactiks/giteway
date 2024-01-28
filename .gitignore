@@ -23,5 +23,8 @@ __debug_bin*
 # Go workspace file
 go.work
 
+# gitignore file
+.env
+
 dist/
 giteway
