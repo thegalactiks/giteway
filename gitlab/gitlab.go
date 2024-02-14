@@ -7,19 +7,19 @@ import (
 	"github.com/xanzy/go-gitlab"
 )
 
-type HostingGitlab struct {
+type GitlabService struct {
 	client *gitlab.Client
 }
 
-var _ hosting.Hosting = (*HostingGitlab)(nil)
+var _ hosting.GitHostingService = (*GitlabService)(nil)
 
-func New(token string) (*HostingGitlab, error) {
+func NewGitlabService(token string) (*GitlabService, error) {
 	client, err := gitlab.NewOAuthClient(token)
 	if err != nil {
 		return nil, err
 	}
 
-	return &HostingGitlab{
+	return &GitlabService{
 		client: client,
 	}, nil
 }

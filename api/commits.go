@@ -12,18 +12,18 @@ import (
 func (h *Handler) GetCommits(ctx *gin.Context) {
 	var uri RepoURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form RefForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -33,7 +33,7 @@ func (h *Handler) GetCommits(ctx *gin.Context) {
 		&hosting.GetCommitsOpts{Ref: form.Ref},
 	)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 

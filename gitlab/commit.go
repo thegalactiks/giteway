@@ -9,25 +9,25 @@ import (
 
 func mapCommit(c *gitlab.Commit) *hosting.Commit {
 	commit := hosting.Commit{
-		SHA: &c.ID,
-		Author: hosting.CommitAuthor{
+		SHA: c.ID,
+		Author: &hosting.CommitAuthor{
 			Date:  *c.AuthoredDate,
 			Name:  c.AuthorName,
 			Email: c.AuthorEmail,
 		},
-		Committer: hosting.CommitAuthor{
+		Committer: &hosting.CommitAuthor{
 			Date:  *c.CommittedDate,
 			Name:  c.CommitterName,
 			Email: c.CommitterEmail,
 		},
-		Message: c.Message,
-		Date:    *c.CommittedDate,
+		Message: &c.Message,
+		Date:    c.CommittedDate,
 	}
 
 	return &commit
 }
 
-func (h *HostingGitlab) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
+func (h *GitlabService) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
 	h.client.Projects.GetProject(ctx, &gitlab.GetProjectOptions{})
 	gitlabCommits, _, err := h.client.Commits.ListCommits(createPid(repo), &gitlab.ListCommitsOptions{
 		RefName: opts.Ref,

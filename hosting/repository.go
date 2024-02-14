@@ -9,6 +9,5 @@ type Repository struct {
 	CloneURL      string    `json:"clone_url"`
 	GitURL        string    `json:"git_url"`
 	CreatedAt     time.Time `json:"created_at"`
-	PushedAt      time.Time `json:"pushed_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 }

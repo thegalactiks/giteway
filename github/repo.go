@@ -15,7 +15,6 @@ func mapRepository(owner string, r *github.Repository) *hosting.Repository {
 		CloneURL:      r.GetCloneURL(),
 		GitURL:        r.GetGitURL(),
 		CreatedAt:     r.GetCreatedAt().Time,
-		PushedAt:      r.GetPushedAt().Time,
 		UpdatedAt:     r.GetUpdatedAt().Time,
 	}
 
@@ -32,7 +31,7 @@ func mapRepositories(owner string, rs []*github.Repository) []hosting.Repository
 	return repos
 }
 
-func (h *HostingGithub) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
+func (h *GithubService) GetRepositories(ctx context.Context, owner string) ([]hosting.Repository, error) {
 	org, _, err := h.client.Organizations.Get(ctx, owner)
 	if err == nil && org.GetLogin() == owner {
 		githubRepos, _, err := h.client.Repositories.ListByOrg(ctx, owner, &github.RepositoryListByOrgOptions{
@@ -71,7 +70,7 @@ func (h *HostingGithub) GetRepositories(ctx context.Context, owner string) ([]ho
 	return mapRepositories(owner, githubRepos), nil
 }
 
-func (h *HostingGithub) GetRepository(ctx context.Context, owner string, repo string) (*hosting.Repository, error) {
+func (h *GithubService) GetRepository(ctx context.Context, owner string, repo string) (*hosting.Repository, error) {
 	githubRepo, _, err := h.client.Repositories.Get(ctx, owner, repo)
 	if err != nil {
 		return nil, err

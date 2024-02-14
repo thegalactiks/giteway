@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-type Hosting interface {
+type GitHostingService interface {
 	GetRepositories(ctx context.Context, owner string) ([]Repository, error)
 	GetRepository(ctx context.Context, owner string, repo string) (*Repository, error)
 	GetBranches(ctx context.Context, repo *Repository) ([]Branch, error)

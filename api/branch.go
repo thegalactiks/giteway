@@ -7,24 +7,22 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
-// Get branches list
-// @Summary Get branches list.
 func (h *Handler) GetBranches(ctx *gin.Context) {
 	var uri RepoURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	branches, err := hsting.GetBranches(ctx.Request.Context(), &hosting.Repository{Owner: uri.Owner, Name: uri.Name})
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadGateway, UnknownGitProviderError, err)
 		return
 	}
 
@@ -35,24 +33,22 @@ type CreateBranchForm struct {
 	Name string `uri:"name" binding:"required"`
 }
 
-// Create a branch with name
-// @Summary Create a branch with name.
 func (h *Handler) CreateBranch(ctx *gin.Context) {
 	var uri RepoURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form CreateBranchForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -64,7 +60,7 @@ func (h *Handler) CreateBranch(ctx *gin.Context) {
 		},
 	)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadGateway, UnknownGitProviderError, err)
 		return
 	}
 
@@ -76,18 +72,16 @@ type DeleteBranchUri struct {
 	Branch string `uri:"branch" binding:"required"`
 }
 
-// Delete a branch by name
-// @Summary Delete a branch by name.
 func (h *Handler) DeleteBranch(ctx *gin.Context) {
 	var uri DeleteBranchUri
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	hsting, err := getHostingFromContext(ctx)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadRequest, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -99,7 +93,7 @@ func (h *Handler) DeleteBranch(ctx *gin.Context) {
 		},
 	)
 	if err != nil {
-		respondWithError(ctx, http.StatusBadGateway, err)
+		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 

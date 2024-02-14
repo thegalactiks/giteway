@@ -19,20 +19,20 @@ func mapCommitAuthor(a *github.CommitAuthor) *hosting.CommitAuthor {
 
 func mapCommit(c *github.Commit) *hosting.Commit {
 	commit := hosting.Commit{
-		SHA: c.SHA,
-		Tree: hosting.CommitTree{
+		SHA: c.GetSHA(),
+		Tree: &hosting.CommitTree{
 			SHA: c.GetTree().GetSHA(),
 		},
-		Author:    *mapCommitAuthor(c.GetAuthor()),
-		Committer: *mapCommitAuthor(c.GetCommitter()),
-		Message:   c.GetMessage(),
-		Date:      c.GetCommitter().GetDate().Time,
+		Author:    mapCommitAuthor(c.GetAuthor()),
+		Committer: mapCommitAuthor(c.GetCommitter()),
+		Message:   c.Message,
+		Date:      &c.GetCommitter().Date.Time,
 	}
 
 	return &commit
 }
 
-func (h *HostingGithub) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
+func (h *GithubService) GetCommits(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) ([]hosting.Commit, error) {
 	githubCommits, _, err := h.client.Repositories.ListCommits(ctx, repo.Owner, repo.Name, &github.CommitsListOptions{
 		SHA: *opts.Ref,
 	})
@@ -49,7 +49,7 @@ func (h *HostingGithub) GetCommits(ctx context.Context, repo *hosting.Repository
 	return commits, nil
 }
 
-func (h *HostingGithub) GetCommit(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) (*hosting.Commit, error) {
+func (h *GithubService) GetCommit(ctx context.Context, repo *hosting.Repository, opts *hosting.GetCommitsOpts) (*hosting.Commit, error) {
 	githubCommit, _, err := h.client.Repositories.GetCommit(ctx, repo.Owner, repo.Name, *opts.Ref, &github.ListOptions{})
 	if err != nil {
 		return nil, err
