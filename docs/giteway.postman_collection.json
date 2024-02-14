@@ -1,0 +1,729 @@
+{
+	"info": {
+		"_postman_id": "49e69c74-8d76-4bfd-ac68-f0eab52bf383",
+		"name": "Giteway",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "458835"
+	},
+	"item": [
+		{
+			"name": "Gitlab",
+			"item": [
+				{
+					"name": "Get Repos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Branch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/branches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"branches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/files?ref=main",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"files"
+							],
+							"query": [
+								{
+									"key": "ref",
+									"value": "main"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Commits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/commits?ref=main",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"commits"
+							],
+							"query": [
+								{
+									"key": "ref",
+									"value": "main"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.giteway.raw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.giteway.raw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"test 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/gitlab.com/galactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"gitlab.com",
+								"galactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "api read_api openid profile email",
+						"type": "string"
+					},
+					{
+						"key": "tokenType",
+						"value": "Bearer",
+						"type": "string"
+					},
+					{
+						"key": "accessToken",
+						"value": "6e763c4cbedd72e04fc51c42496db5a4bf251039caa75c0ebe6a9fde8f184303",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "gloas-b34e4b327f67df5dd8132fa2b177cdd051c5f79cb6044fafe267b0fe9617918e",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "0f1ed37ffad1f40274981364105752d53a67043b529ffca7bcd36b48223ec111",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://gitlab.com/oauth/authorize",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://gitlab.com/oauth/token",
+						"type": "string"
+					},
+					{
+						"key": "tokenName",
+						"value": "GitlabToken",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://giteway.galactiks.local/callback",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Github",
+			"item": [
+				{
+					"name": "Get Repos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway/branches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway",
+								"branches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Branch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/branches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"branches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Branch",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/branches/test",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"branches",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Commits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway/commits?ref=main",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway",
+								"commits"
+							],
+							"query": [
+								{
+									"key": "ref",
+									"value": "main"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files?ref=main",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files"
+							],
+							"query": [
+								{
+									"key": "ref",
+									"value": "main"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files/README.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files",
+								"README.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Raw File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.giteway.raw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.giteway.raw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.giteway.raw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"test 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete File",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/repos/github.com/thegalactiks/giteway-test/files/test.md",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"repos",
+								"github.com",
+								"thegalactiks",
+								"giteway-test",
+								"files",
+								"test.md"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "user:email",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://github.com/login/oauth/access_token",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://github.com/login/oauth/authorize",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "4ae34e41feba951b55db65d8cd01867ff5bc1bde",
+						"type": "string"
+					},
+					{
+						"key": "tokenName",
+						"value": "GithubToken",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "Iv1.119138ebef981a2b",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://giteway.galactiks.local/callback",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
