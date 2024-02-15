@@ -18,11 +18,22 @@ tags:
     externalDocs:
       description: Find out more
       url: https://docs.galactiks.com/docs/giteway
+
   - name: repo
     description: Repository APIs
     externalDocs:
       description: Find out more
       url: https://docs.galactiks.com/docs/giteway
+
+  - name: file
+    description: Repository files APIs
+    externalDocs:
+      description: Find out more
+      url: https://docs.galactiks.com/docs/giteway
+
+security:
+  - gitlab: ["api", "read_api", "write_repository"]
+  - github: ["user:email"]
 
 paths:
   /repos/{hosting}/{owner}:
@@ -32,26 +43,26 @@ paths:
       summary: Get Repositories for an owner or an organization
       operationId: getRepositoriesByOwner
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Repository'
-        '400':
+                  $ref: "#/components/schemas/Repository"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}:
@@ -61,25 +72,25 @@ paths:
       summary: Get Repository informations by name
       operationId: getRepositoryByName
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Repository'
-        '400':
+                $ref: "#/components/schemas/Repository"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}/branches:
@@ -89,27 +100,27 @@ paths:
       summary: Get Repository branches
       operationId: getRepositoryBranches
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Branch'
-        '400':
+                  $ref: "#/components/schemas/Branch"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
     post:
@@ -118,10 +129,10 @@ paths:
       summary: Create Repository branch
       operationId: createRepositoryBranch
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
-      requestBody: 
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
+      requestBody:
         description: Create branch for a repository
         content:
           application/json:
@@ -133,23 +144,23 @@ paths:
                   type: string
         required: true
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Branch'
-        '400':
+                  $ref: "#/components/schemas/Branch"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}/branches/{branch}:
@@ -159,9 +170,9 @@ paths:
       summary: Delete Repository branch by branch name
       operationId: deleteRepositoryBranchByName
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
         - name: branch
           in: path
           description: Branch name
@@ -169,17 +180,17 @@ paths:
           schema:
             type: string
       responses:
-        '240':
+        "240":
           description: OK
-        '400':
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}/commits:
@@ -189,27 +200,27 @@ paths:
       summary: Get Repository commits
       operationId: getRepositoryCommits
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Commit'
-        '400':
+                  $ref: "#/components/schemas/Commit"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}/files:
@@ -219,27 +230,27 @@ paths:
       summary: Get Repository files
       operationId: getRepositoryFiles
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/File'
-        '400':
+                  $ref: "#/components/schemas/File"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
   /repos/{hosting}/{owner}/{repository}/files/{path*}:
@@ -249,28 +260,28 @@ paths:
       summary: Get Repository file by path
       operationId: getRepositoryFileByPath
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
-        - $ref: '#/components/parameters/path'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
+        - $ref: "#/components/parameters/path"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/File'
-        '400':
+                  $ref: "#/components/schemas/File"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
     post:
@@ -279,30 +290,30 @@ paths:
       summary: Create a new file and commit.
       operationId: createFileAndCommit
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
-        - $ref: '#/components/parameters/path'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
+        - $ref: "#/components/parameters/path"
       requestBody:
-        $ref: '#/components/requestBodies/File'
+        $ref: "#/components/requestBodies/File"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/File'
-        '400':
+                  $ref: "#/components/schemas/File"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
     put:
@@ -311,30 +322,30 @@ paths:
       summary: Update an existing file and create a new commit.
       operationId: updateFileAndCommit
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
-        - $ref: '#/components/parameters/path'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
+        - $ref: "#/components/parameters/path"
       requestBody:
-        $ref: '#/components/requestBodies/File'
+        $ref: "#/components/requestBodies/File"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/File'
-        '400':
+                  $ref: "#/components/schemas/File"
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
     delete:
@@ -343,25 +354,39 @@ paths:
       summary: Delete an existing file and create a new commit.
       operationId: deleteFileAndCommit
       parameters:
-        - $ref: '#/components/parameters/hosting'
-        - $ref: '#/components/parameters/owner'
-        - $ref: '#/components/parameters/repository'
-        - $ref: '#/components/parameters/path'
+        - $ref: "#/components/parameters/hosting"
+        - $ref: "#/components/parameters/owner"
+        - $ref: "#/components/parameters/repository"
+        - $ref: "#/components/parameters/path"
       responses:
-        '204':
+        "204":
           description: OK
-        '400':
+        "400":
           description: Bad request.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        '401':
+                $ref: "#/components/schemas/Error"
+        "401":
           description: Authorization information is missing or invalid.
-        '5XX':
+        "5XX":
           description: Unexpected error.
 
 components:
+  securitySchemes:
+    github:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://github.com/login/oauth/authorize
+          tokenUrl: https://github.com/login/oauth/access_token
+          scopes:
+            user:email: Grant User email access
+
+    gitlab:
+      type: openIdConnect
+      openIdConnectUrl: https://gitlab.com/.well-known/openid-configuration
+
   parameters:
     hosting:
       name: hosting
@@ -400,7 +425,7 @@ components:
         items:
           type: string
 
-  requestBodies: 
+  requestBodies:
     File:
       description: New or existing file to be uploaded and commit
       content:
@@ -423,7 +448,7 @@ components:
 
   schemas:
     Repository:
-      required: 
+      required:
         - owner
         - name
         - git_url
@@ -483,9 +508,9 @@ components:
             sha:
               type: string
         author:
-          $ref: '#/components/schemas/CommitAuthor'
+          $ref: "#/components/schemas/CommitAuthor"
         committer:
-          $ref: '#/components/schemas/CommitAuthor'
+          $ref: "#/components/schemas/CommitAuthor"
         message:
           type: string
         date:
