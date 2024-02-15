@@ -7,7 +7,6 @@ require (
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-contrib/timeout v0.0.6
 	github.com/gin-gonic/gin v1.9.1
-	github.com/google/go-github/v58 v58.0.0
 	github.com/google/go-github/v59 v59.0.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/confmap v0.1.0
