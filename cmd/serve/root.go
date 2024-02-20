@@ -15,6 +15,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-contrib/timeout"
+	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
@@ -83,6 +84,8 @@ func newHTTPServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 	defer logger.Sync()
 
 	r.Use(requestid.New())
+	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
+	r.Use(ginzap.RecoveryWithZap(logger, true))
 	if cfg.ServeConfig.Cors.Enabled {
 		r.Use(cors.New(cors.Config{
 			AllowOrigins:     cfg.ServeConfig.Cors.AllowOrigins,
