@@ -33,7 +33,7 @@ tags:
 
 security:
   - gitlab: ["api", "read_api", "write_repository"]
-  - github: ["user:email"]
+  - github: ["user:email", "repo"]
 
 paths:
   /repos/{hosting}/{owner}:
