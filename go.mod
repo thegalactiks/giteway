@@ -16,7 +16,7 @@ require (
 	github.com/knadh/koanf/v2 v2.1.0
 	github.com/magiconair/properties v1.8.7
 	github.com/spf13/cobra v1.8.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/xanzy/go-gitlab v0.98.0
 	go.uber.org/fx v1.20.1
 	go.uber.org/zap v1.27.0
