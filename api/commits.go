@@ -7,35 +7,25 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
-// Get commits list
-// @Summary Get commits list.
 func (h *Handler) GetCommits(ctx *gin.Context) {
-	var uri RepoURI
-	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
 
 	var form RefForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-	}
-
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to bind form", err)
 		return
 	}
 
-	commits, err := hsting.GetCommits(
+	commits, err := hostingService.GetCommits(
 		ctx.Request.Context(),
-		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
+		repo,
 		&hosting.GetCommitsOpts{Ref: form.Ref},
 	)
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to get commits", err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, commits)
+	RespondJSON(ctx, http.StatusOK, commits)
 }

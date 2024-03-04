@@ -8,25 +8,16 @@ import (
 )
 
 func (h *Handler) GetBranches(ctx *gin.Context) {
-	var uri RepoURI
-	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
 
-	hsting, err := getHostingFromContext(ctx)
+	branches, err := hostingService.GetBranches(ctx.Request.Context(), repo)
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to get branches", err)
 		return
 	}
 
-	branches, err := hsting.GetBranches(ctx.Request.Context(), &hosting.Repository{Owner: uri.Owner, Name: uri.Name})
-	if err != nil {
-		WriteErr(ctx, http.StatusBadGateway, UnknownGitProviderError, err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, branches)
+	RespondJSON(ctx, http.StatusOK, branches)
 }
 
 type CreateBranchForm struct {
@@ -34,68 +25,55 @@ type CreateBranchForm struct {
 }
 
 func (h *Handler) CreateBranch(ctx *gin.Context) {
-	var uri RepoURI
-	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
 
 	var form CreateBranchForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
-	branch, err := hsting.CreateBranch(
+	branch, err := hostingService.CreateBranch(
 		ctx.Request.Context(),
-		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
+		repo,
 		&hosting.CreateBranchOpts{
 			Branch: &form.Name,
 		},
 	)
 	if err != nil {
-		WriteErr(ctx, http.StatusBadGateway, UnknownGitProviderError, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to create branch", err)
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, branch)
+	RespondJSON(ctx, http.StatusCreated, branch)
 }
 
 type DeleteBranchUri struct {
-	RepoURI
 	Branch string `uri:"branch" binding:"required"`
 }
 
 func (h *Handler) DeleteBranch(ctx *gin.Context) {
 	var uri DeleteBranchUri
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
 
-	err = hsting.DeleteBranch(
+	err := hostingService.DeleteBranch(
 		ctx.Request.Context(),
-		&hosting.Repository{Owner: uri.Owner, Name: uri.Name},
+		repo,
 		&hosting.Branch{
 			Name: uri.Branch,
 		},
 	)
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to delete branch", err)
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	RespondJSON(ctx, http.StatusNoContent, nil)
 }

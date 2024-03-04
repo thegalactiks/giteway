@@ -44,9 +44,13 @@ var NewError = func(status int, msg string) StatusError {
 	}
 }
 
-func WriteErr(ctx *gin.Context, status int, msg string, errs ...error) {
+func RespondError(ctx *gin.Context, status int, msg string, errs ...error) {
 	err := NewError(status, msg)
 
 	ctx.Header("Content-Type", "application/problem+json")
 	ctx.JSON(err.GetStatus(), gin.H{"error": err.Error()})
+}
+
+func RespondJSON(c *gin.Context, status int, payload interface{}) {
+	c.JSON(status, payload)
 }
