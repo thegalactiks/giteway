@@ -4,51 +4,31 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/thegalactiks/giteway/hosting"
 )
 
-// Get repositories list
-// @Summary Get repositories list.
 func (h *Handler) GetRepositories(ctx *gin.Context) {
-	var uri OwnerUri
-	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	owner := ctx.MustGet("owner").(string)
+
+	repos, err := hostingService.GetRepositories(ctx.Request.Context(), owner)
+	if err != nil {
+		RespondError(ctx, http.StatusBadRequest, "failed to get repositories", err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
-	repos, err := hsting.GetRepositories(ctx.Request.Context(), uri.Owner)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-	}
-
-	ctx.JSON(http.StatusOK, repos)
+	RespondJSON(ctx, http.StatusOK, repos)
 }
 
-// Get repository details.
-// @Summary Get repository details.
 func (h *Handler) GetRepository(ctx *gin.Context) {
-	var uri RepoURI
-	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
 
-	hsting, err := getHostingFromContext(ctx)
+	repo, err := hostingService.GetRepository(ctx.Request.Context(), repo.Owner, repo.Name)
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to get repository", err)
 		return
 	}
 
-	repo, err := hsting.GetRepository(ctx.Request.Context(), uri.Owner, uri.Name)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, repo)
+	RespondJSON(ctx, http.StatusOK, repo)
 }

@@ -14,16 +14,6 @@ type Handler struct {
 	e *gin.Engine
 }
 
-type OwnerUri struct {
-	Hosting string `uri:"hosting" binding:"required"`
-	Owner   string `uri:"owner" binding:"required"`
-}
-
-type RepoURI struct {
-	OwnerUri
-	Name string `uri:"name" binding:"required"`
-}
-
 type RefForm struct {
 	Ref    *string `form:"ref,omitempty"`
 	SHA    *string `form:"sha,omitempty"`
@@ -36,10 +26,12 @@ func NewHandler(cfg *config.Config, e *gin.Engine) *Handler {
 
 func Routes(r *gin.Engine, h *Handler) {
 	adminApi := r.Group("/")
+	adminApi.Use(HostingMiddleware(), OwnerMiddleware())
 	adminApi.GET("/repos/:hosting/:owner", h.GetRepositories)
-	adminApi.GET("/repos/:hosting/:owner/:name", h.GetRepository)
+	adminApi.GET("/repos/:hosting/:owner/:repo", RepoMiddleware(), h.GetRepository)
 
-	gitRepoApi := r.Group("/repos/:hosting/:owner/:name")
+	gitRepoApi := adminApi.Group("/repos/:hosting/:owner/:repo")
+	gitRepoApi.Use(RepoMiddleware())
 	gitRepoApi.GET("/branches", h.GetBranches)
 	gitRepoApi.POST("/branches", h.CreateBranch)
 	gitRepoApi.DELETE("/branches/:branch", h.DeleteBranch)

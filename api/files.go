@@ -8,7 +8,6 @@ import (
 )
 
 type FileURI struct {
-	RepoURI
 	Path string `uri:"path,default=/"`
 }
 
@@ -23,30 +22,26 @@ type FileContentForm struct {
 }
 
 func (h *Handler) GetFiles(ctx *gin.Context) {
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
+
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, "validation failed", err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form RefForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, "validation failed", err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, "unknown git provider", err)
-		return
-	}
-
-	repo := hosting.Repository{Owner: uri.Owner, Name: uri.Name}
 	switch ctx.NegotiateFormat(gin.MIMEJSON, RawMimeTypes) {
 	case RawMimeTypes:
-		file, err := hsting.GetRawFile(ctx.Request.Context(), &repo, uri.Path, &hosting.GetFileOpts{})
+		file, err := hostingService.GetRawFile(ctx.Request.Context(), repo, uri.Path, &hosting.GetFileOpts{})
 		if err != nil {
-			WriteErr(ctx, http.StatusBadGateway, "error from hosting service", err)
+			RespondError(ctx, http.StatusBadRequest, "failed to get raw file", err)
 			return
 		}
 
@@ -54,37 +49,40 @@ func (h *Handler) GetFiles(ctx *gin.Context) {
 		return
 
 	default:
-		file, files, err := hsting.GetFiles(ctx.Request.Context(), &repo, uri.Path)
+		file, files, err := hostingService.GetFiles(ctx.Request.Context(), repo, uri.Path)
 		if err != nil {
-			WriteErr(ctx, http.StatusBadGateway, "error from hosting service", err)
+			RespondError(ctx, http.StatusBadRequest, "failed to get files", err)
 			return
 		}
 
 		if file != nil {
-			ctx.JSON(http.StatusOK, file)
+			RespondJSON(ctx, http.StatusOK, file)
 			return
 		}
 
-		ctx.JSON(http.StatusOK, files)
+		RespondJSON(ctx, http.StatusOK, files)
 	}
 }
 
 func (h *Handler) CreateFile(ctx *gin.Context) {
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
+
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form FileContentForm
 	if err := ctx.ShouldBindJSON(&form); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -95,18 +93,12 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 		message = "chore: create file"
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
 	file := hosting.File{
 		Path:    uri.Path,
 		Content: &form.Content,
 	}
 	file.SetEncoding(form.Encoding)
-	_, commit, err := hsting.CreateFile(ctx, &hosting.Repository{Owner: uri.Owner, Name: uri.Name}, &file, &hosting.CreateFileOpts{
+	_, commit, err := hostingService.CreateFile(ctx, repo, &file, &hosting.CreateFileOpts{
 		SHA:    queryForm.SHA,
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
@@ -115,7 +107,7 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 		},
 	})
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to create file", err)
 		return
 	}
 
@@ -123,21 +115,24 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 }
 
 func (h *Handler) UpdateFile(ctx *gin.Context) {
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
+
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var form FileContentForm
 	if err := ctx.ShouldBindJSON(&form); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -148,18 +143,12 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 		message = "chore: update file"
 	}
 
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
 	file := hosting.File{
 		Path:    uri.Path,
 		Content: &form.Content,
 	}
 	file.SetEncoding(form.Encoding)
-	_, commit, err := hsting.UpdateFile(ctx, &hosting.Repository{Owner: uri.Owner, Name: uri.Name}, &file, &hosting.UpdateFileOpts{
+	_, commit, err := hostingService.UpdateFile(ctx, repo, &file, &hosting.UpdateFileOpts{
 		SHA:    queryForm.SHA,
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
@@ -168,7 +157,7 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 		},
 	})
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
@@ -176,26 +165,23 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 }
 
 func (h *Handler) DeleteFile(ctx *gin.Context) {
+	hostingService := ctx.MustGet("hosting").(hosting.GitHostingService)
+	repo := ctx.MustGet("repo").(*hosting.Repository)
+
 	var uri FileURI
 	if err := ctx.ShouldBindUri(&uri); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	var queryForm RefForm
 	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
-		return
-	}
-
-	hsting, err := getHostingFromContext(ctx)
-	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
 	message := "chore: delete file"
-	_, err = hsting.DeleteFile(ctx, &hosting.Repository{Owner: uri.Owner, Name: uri.Name}, uri.Path, &hosting.DeleteFileOpts{
+	_, err := hostingService.DeleteFile(ctx, repo, uri.Path, &hosting.DeleteFileOpts{
 		SHA:    queryForm.SHA,
 		Branch: &queryForm.Branch,
 		Ref:    queryForm.Ref,
@@ -204,7 +190,7 @@ func (h *Handler) DeleteFile(ctx *gin.Context) {
 		},
 	})
 	if err != nil {
-		WriteErr(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		RespondError(ctx, http.StatusBadRequest, "failed to delete file", err)
 		return
 	}
 
