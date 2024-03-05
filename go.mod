@@ -3,6 +3,7 @@ module github.com/thegalactiks/giteway
 go 1.22.0
 
 require (
+	github.com/bradleyfalzon/ghinstallation/v2 v2.9.0
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-contrib/requestid v0.0.6
 	github.com/gin-contrib/timeout v0.0.7
@@ -47,7 +48,9 @@ require (
 	github.com/go-playground/validator/v10 v10.18.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.0.0-alpha.1 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/go-github/v57 v57.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0 // indirect

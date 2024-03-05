@@ -44,12 +44,7 @@ func (h *GithubService) GetRepositories(ctx context.Context, owner string) ([]ho
 		return mapRepositories(owner, githubRepos), nil
 	}
 
-	var user *github.User
-	if h.hasToken {
-		user, _, _ = h.client.Users.Get(ctx, "")
-	}
-
-	if user != nil && user.GetLogin() == owner {
+	if h.user != nil && h.user.GetLogin() == owner {
 		githubRepos, _, err := h.client.Repositories.ListByAuthenticatedUser(ctx, &github.RepositoryListByAuthenticatedUserOptions{
 			Sort: "updated",
 		})

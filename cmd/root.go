@@ -8,16 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	configFile string
-)
-
 func NewRootCmd() (cmd *cobra.Command) {
 	var rootCmd = &cobra.Command{
 		Use: "Giteway",
 	}
-	rootCmd.PersistentFlags().StringVarP(&configFile, "conf", "c", "", "config file path")
-	rootCmd.AddCommand(serve.NewServeCmd(configFile))
+	rootCmd.AddCommand(serve.NewServeCmd())
 
 	return rootCmd
 }

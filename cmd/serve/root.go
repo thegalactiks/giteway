@@ -24,9 +24,14 @@ import (
 	"go.uber.org/zap/zapcore"
 
 	"github.com/thegalactiks/giteway/api"
+	"github.com/thegalactiks/giteway/github"
 	"github.com/thegalactiks/giteway/internal/config"
 	"github.com/thegalactiks/giteway/internal/logging"
 	"github.com/thegalactiks/giteway/internal/otel"
+)
+
+var (
+	configFile string
 )
 
 func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
@@ -41,24 +46,24 @@ func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
 	)
 }
 
-func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
-	cfg, err := config.New(configFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-	logging.SetConfig(&logging.Config{
-		Encoding:    cfg.LoggingConfig.Encoding,
-		Level:       zapcore.Level(cfg.LoggingConfig.Level),
-		Development: cfg.LoggingConfig.Development,
-	})
-	defer logging.DefaultLogger().Sync()
-
-	tp := otel.InitTracerProvider()
-	mp := otel.InitMeterProvider()
-
+func NewServeCmd() (serveCmd *cobra.Command) {
 	serveCmd = &cobra.Command{
 		Use: "serve",
 		Run: func(cmd *cobra.Command, args []string) {
+			cfg, err := config.New(configFile)
+			if err != nil {
+				log.Fatal(err)
+			}
+			logging.SetConfig(&logging.Config{
+				Encoding:    cfg.LoggingConfig.Encoding,
+				Level:       zapcore.Level(cfg.LoggingConfig.Level),
+				Development: cfg.LoggingConfig.Development,
+			})
+			defer logging.DefaultLogger().Sync()
+
+			tp := otel.InitTracerProvider()
+			mp := otel.InitMeterProvider()
+
 			app := fx.New(
 				fx.Supply(cfg),
 				fx.Supply(logging.DefaultLogger().Desugar()),
@@ -71,6 +76,7 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 					printAppInfo,
 				),
 				fx.Provide(
+					github.NewGithubService,
 					api.NewHandler,
 					newHTTPServer,
 				),
@@ -82,6 +88,8 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 			app.Run()
 		},
 	}
+
+	serveCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file path")
 
 	return serveCmd
 }
