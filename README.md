@@ -12,15 +12,11 @@ Giteway is an HTTP Gateway for Git services, providing a standardized interface 
 
 ## Getting Started
 
-### Prerequisites
-
-### Configuration
-
-### Usage
+// TODO
 
 ## API Documentation
 
-Detailed API documentation can be found here *(todo)*.
+Documentation for the Giteway API can be found [here](https://docs.galactiks.com/giteway/reference/api/).
 
 ## License
 
