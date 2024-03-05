@@ -74,14 +74,14 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 		return
 	}
 
-	var form FileContentForm
-	if err := ctx.ShouldBindJSON(&form); err != nil {
+	var queryForm RefForm
+	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
 		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
-	var queryForm RefForm
-	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
+	var form FileContentForm
+	if err := ctx.ShouldBind(&form); err != nil {
 		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
@@ -124,14 +124,14 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 		return
 	}
 
-	var form FileContentForm
-	if err := ctx.ShouldBindJSON(&form); err != nil {
+	var queryForm RefForm
+	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
 		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
 
-	var queryForm RefForm
-	if err := ctx.ShouldBindQuery(&queryForm); err != nil {
+	var form FileContentForm
+	if err := ctx.ShouldBind(&form); err != nil {
 		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
 		return
 	}
