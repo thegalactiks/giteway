@@ -11,6 +11,11 @@ import (
 	"github.com/thegalactiks/giteway/hosting"
 )
 
+const (
+	GithubHost = "github.com"
+	GitlabHost = "gitlab.com"
+)
+
 func getTokenFromContext(ctx *gin.Context) (*string, error) {
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -23,27 +28,14 @@ func getTokenFromContext(ctx *gin.Context) (*string, error) {
 	}
 
 	token := authParts[1]
+	if token == "" {
+		return nil, errors.New("invalid authorization header")
+	}
 
 	return &token, nil
 }
 
-func getHostingFromContext(hosting string, token *string) (hosting.GitHostingService, error) {
-	switch hosting {
-	case "github.com":
-		return github.NewGithubService(token)
-
-	case "gitlab.com":
-		if token == nil || *token == "" {
-			return nil, errors.New("gitlab require a token")
-		}
-
-		return gitlab.NewGitlabService(*token)
-	}
-
-	return nil, errors.New("unknown hosting service")
-}
-
-func HostingMiddleware() gin.HandlerFunc {
+func HostingMiddleware(githubService *github.GithubService) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		token, err := getTokenFromContext(ctx)
 		if err != nil {
@@ -52,10 +44,36 @@ func HostingMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		hosting := ctx.Param("hosting")
-		service, err := getHostingFromContext(hosting, token)
-		if err != nil {
-			RespondError(ctx, http.StatusBadRequest, "unknown git provider", err)
+		hostingParam := ctx.Param("hosting")
+		ownerParam := ctx.Param("owner")
+		var service hosting.GitHostingService
+		if hostingParam == GithubHost {
+			if token != nil {
+				service, err = githubService.WithAuthToken(ctx, *token)
+				if err != nil {
+					RespondError(ctx, http.StatusUnauthorized, "invalid github token", err)
+					ctx.Abort()
+					return
+				}
+			} else if ownerParam != "" && githubService.IsKnownInstallation(ownerParam) {
+				service, err = githubService.WithInstallationOwner(ownerParam)
+				if err != nil {
+					RespondError(ctx, http.StatusUnauthorized, "invalid github installation", err)
+					ctx.Abort()
+					return
+				}
+			} else {
+				service = githubService
+			}
+		} else if hostingParam == GitlabHost {
+			service, err = gitlab.NewGitlabService(*token)
+			if err != nil {
+				RespondError(ctx, http.StatusUnauthorized, "invalid gitlab token", err)
+				ctx.Abort()
+				return
+			}
+		} else {
+			RespondError(ctx, http.StatusBadRequest, "unknown git provider")
 			ctx.Abort()
 			return
 		}

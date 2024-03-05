@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/thegalactiks/giteway/github"
 	"github.com/thegalactiks/giteway/internal/config"
 )
 
@@ -24,9 +25,9 @@ func NewHandler(cfg *config.Config, e *gin.Engine) *Handler {
 	return &Handler{cfg, e}
 }
 
-func Routes(r *gin.Engine, h *Handler) {
+func Routes(r *gin.Engine, h *Handler, githubService *github.GithubService) {
 	adminApi := r.Group("/")
-	adminApi.Use(HostingMiddleware(), OwnerMiddleware())
+	adminApi.Use(OwnerMiddleware(), HostingMiddleware(githubService))
 	adminApi.GET("/repos/:hosting/:owner", h.GetRepositories)
 	adminApi.GET("/repos/:hosting/:owner/:repo", RepoMiddleware(), h.GetRepository)
 

@@ -26,5 +26,10 @@ go.work
 # gitignore file
 .env
 
+# Giteway files
 dist/
 giteway
+config.yaml
+
+# Github files
+*.private-key.pem

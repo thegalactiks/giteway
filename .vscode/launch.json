@@ -12,6 +12,16 @@
             "program": "${workspaceRoot}",
             "args": ["serve"],
             "envFile": "${workspaceRoot}/.env"
+        },
+
+        {
+            "name": "Launch With Config file",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceRoot}",
+            "args": ["serve", "--config", "./config.yaml"],
+            "envFile": "${workspaceRoot}/.env"
         }
     ]
 }

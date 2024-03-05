@@ -2,11 +2,10 @@ package gitlab
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/thegalactiks/giteway/hosting"
+	"github.com/thegalactiks/giteway/internal/http"
 	"github.com/xanzy/go-gitlab"
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 type GitlabService struct {
@@ -16,10 +15,7 @@ type GitlabService struct {
 var _ hosting.GitHostingService = (*GitlabService)(nil)
 
 func NewGitlabService(token string) (*GitlabService, error) {
-	httpClient := &http.Client{
-		Transport: otelhttp.NewTransport(http.DefaultTransport),
-	}
-	client, err := gitlab.NewOAuthClient(token, gitlab.WithHTTPClient(httpClient))
+	client, err := gitlab.NewOAuthClient(token, gitlab.WithHTTPClient(http.NewHttpClient(nil)))
 	if err != nil {
 		return nil, err
 	}

@@ -17,6 +17,7 @@ import (
 type Config struct {
 	ServeConfig   ServeConfig   `json:"serve" yaml:"serve"`
 	LoggingConfig LoggingConfig `json:"logging" yaml:"logging"`
+	GithubConfig  GithubConfig  `json:"github" yaml:"github"`
 }
 
 type ServeConfig struct {
@@ -37,6 +38,17 @@ type LoggingConfig struct {
 	Level       int    `json:"level"`
 	Encoding    string `json:"encoding"`
 	Development bool   `json:"development"`
+}
+
+type GithubInstallation struct {
+	ID int64 `json:"id" yaml:"id"`
+}
+
+type GithubConfig struct {
+	PrivateKeyPath string `json:"private_key_path" yaml:"private_key_path"`
+	AppID          int64  `json:"app_id" yaml:"app_id"`
+
+	Installations map[string]GithubInstallation `json:"installations" yaml:"installations"`
 }
 
 var k = koanf.New(".")
