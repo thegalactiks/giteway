@@ -8,20 +8,25 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/thegalactiks/giteway/api"
-	"github.com/thegalactiks/giteway/internal/config"
-	"github.com/thegalactiks/giteway/internal/logging"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-contrib/timeout"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"github.com/uptrace/opentelemetry-go-extra/otelzap"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	otelmetric "go.opentelemetry.io/otel/sdk/metric"
+	oteltrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/thegalactiks/giteway/api"
+	"github.com/thegalactiks/giteway/internal/config"
+	"github.com/thegalactiks/giteway/internal/logging"
+	"github.com/thegalactiks/giteway/internal/otel"
 )
 
 func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
@@ -48,12 +53,17 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 	})
 	defer logging.DefaultLogger().Sync()
 
+	tp := otel.InitTracerProvider()
+	mp := otel.InitMeterProvider()
+
 	serveCmd = &cobra.Command{
 		Use: "serve",
 		Run: func(cmd *cobra.Command, args []string) {
 			app := fx.New(
 				fx.Supply(cfg),
 				fx.Supply(logging.DefaultLogger().Desugar()),
+				fx.Supply(tp),
+				fx.Supply(mp),
 				fx.WithLogger(func(log *zap.Logger) fxevent.Logger {
 					return &fxevent.ZapLogger{Logger: log.Named("fx")}
 				}),
@@ -76,13 +86,20 @@ func NewServeCmd(configFile string) (serveCmd *cobra.Command) {
 	return serveCmd
 }
 
-func newHTTPServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
+func newHTTPServer(lc fx.Lifecycle, tp *oteltrace.TracerProvider, mp *otelmetric.MeterProvider, cfg *config.Config) *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 	r := gin.New()
 
-	logger := zap.NewExample()
+	logger := otelzap.New(zap.NewExample())
 	defer logger.Sync()
 
+	undo := otelzap.ReplaceGlobals(logger)
+	defer undo()
+
+	otelzap.L().Info("replaced zap's global loggers")
+	otelzap.Ctx(context.TODO()).Info("... and with context")
+
+	r.Use(otelgin.Middleware("giteway"))
 	r.Use(requestid.New())
 	r.Use(ginzap.Ginzap(logger, time.RFC3339, true))
 	r.Use(ginzap.RecoveryWithZap(logger, true))
@@ -113,6 +130,8 @@ func newHTTPServer(lc fx.Lifecycle, cfg *config.Config) *gin.Engine {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			tp.Shutdown(ctx)
+			mp.Shutdown(ctx)
 			logging.FromContext(ctx).Info("server shutdown")
 			return srv.Shutdown(ctx)
 		},
