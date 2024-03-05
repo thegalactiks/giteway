@@ -1,7 +1,7 @@
 package github
 
 import (
-	"github.com/google/go-github/v59/github"
+	"github.com/google/go-github/v60/github"
 	"github.com/thegalactiks/giteway/hosting"
 )
 
