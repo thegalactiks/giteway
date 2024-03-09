@@ -40,6 +40,8 @@ github.com/gin-contrib/timeout v0.0.7 h1:38NGp2GQNdbe5s5LOXLbHv7es7K7J8+YYGB1uj+
 github.com/gin-contrib/timeout v0.0.7/go.mod h1:uXJyQh5hAyEHIajsmGUNnJXushLVLuRbWbFh0xnw968=
 github.com/gin-contrib/zap v0.2.0 h1:HLvt3rZXyC8XC+s2lHzMFow3UDqiEbfrBWJyHHS6L8A=
 github.com/gin-contrib/zap v0.2.0/go.mod h1:eqfbe9ZmI+GgTZF6nRiC2ZwDeM4DK1Viwc8OxTCphh0=
+github.com/gin-contrib/zap v1.1.0 h1:GWzL9+zmK8OJdiycaK2SK1/D3SZIYpieJDD0QCNAU1o=
+github.com/gin-contrib/zap v1.1.0/go.mod h1:KzROP9rAL7ofFd1P8lx7Oo2lerwPWNL5vv4f6U/mAk8=
 github.com/gin-gonic/gin v1.8.1/go.mod h1:ji8BvRH1azfM+SYow9zQ6SZMvR8qOMZHmsCuWR9tTTk=
 github.com/gin-gonic/gin v1.9.1 h1:4idEAncQnU5cB7BeOkPtxjfCSye0AAm1R0RVIqJ+Jmg=
 github.com/gin-gonic/gin v1.9.1/go.mod h1:hPrL7YrpYKXt5YId3A/Tnip5kqbEAP+KLuI3SUcPTeU=
