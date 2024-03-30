@@ -5,7 +5,7 @@ go 1.22.1
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.10.0
 	github.com/gin-contrib/cors v1.7.1
-	github.com/gin-contrib/requestid v0.0.6
+	github.com/gin-contrib/requestid v1.0.0
 	github.com/gin-contrib/timeout v0.0.7
 	github.com/gin-contrib/zap v1.1.1
 	github.com/gin-gonic/gin v1.9.1
