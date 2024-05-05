@@ -5,8 +5,8 @@ go 1.22.2
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.10.0
 	github.com/gin-contrib/cors v1.7.2
-	github.com/gin-contrib/requestid v1.0.1
-	github.com/gin-contrib/timeout v1.0.0
+	github.com/gin-contrib/requestid v1.0.2
+	github.com/gin-contrib/timeout v1.0.1
 	github.com/gin-contrib/zap v1.1.3
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/go-github/v60 v60.0.0
@@ -82,12 +82,12 @@ require (
 	go.opentelemetry.io/proto/otlp v1.2.0 // indirect
 	go.uber.org/dig v1.17.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/arch v0.7.0 // indirect
+	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/oauth2 v0.17.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240227224415-6ceb2ff114de // indirect
