@@ -4,6 +4,8 @@ github.com/bradleyfalzon/ghinstallation/v2 v2.9.0 h1:HmxIYqnxubRYcYGRc5v3wUekmo5
 github.com/bradleyfalzon/ghinstallation/v2 v2.9.0/go.mod h1:wmkTDJf8CmVypxE8ijIStFnKoTa6solK5QfdmJrP9KI=
 github.com/bradleyfalzon/ghinstallation/v2 v2.10.0 h1:XWuWBRFEpqVrHepQob9yPS3Xg4K3Wr9QCx4fu8HbUNg=
 github.com/bradleyfalzon/ghinstallation/v2 v2.10.0/go.mod h1:qoGA4DxWPaYTgVCrmEspVSjlTu4WYAiSxMIhorMRXXc=
+github.com/bradleyfalzon/ghinstallation/v2 v2.11.0 h1:R9d0v+iobRHSaE4wKUnXFiZp53AL4ED5MzgEMwGTZag=
+github.com/bradleyfalzon/ghinstallation/v2 v2.11.0/go.mod h1:0LWKQwOHewXO/1acI6TtyE0Xc4ObDb2rFN7eHBAG71M=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.10.0-rc/go.mod h1:ElCzW+ufi8qKqNW0FY314xriJhyJhuoJ3gFZdAHF7NM=
 github.com/bytedance/sonic v1.10.2 h1:GQebETVBxYB7JGWJtLBi07OVzWwt+8dWA00gEVW2ZFE=
@@ -126,6 +128,7 @@ github.com/google/go-github/v57 v57.0.0/go.mod h1:s0omdnye0hvK/ecLvpsGfJMiRt85Pi
 github.com/google/go-github/v60 v60.0.0 h1:oLG98PsLauFvvu4D/YPxq374jhSxFYdzQGNCyONLfn8=
 github.com/google/go-github/v60 v60.0.0/go.mod h1:ByhX2dP9XT9o/ll2yXAu2VD8l5eNVg8hD4Cr0S/LmQk=
 github.com/google/go-github/v61 v61.0.0/go.mod h1:0WR+KmsWX75G2EbpyGsGmradjo3IiciuI4BmdVCobQY=
+github.com/google/go-github/v62 v62.0.0 h1:/6mGCaRywZz9MuHyw9gD1CwsbmBX8GWsbFkwMmHdhl4=
 github.com/google/go-github/v62 v62.0.0/go.mod h1:EMxeUqGJq2xRu9DYBMwel/mr7kZrzUOfQmmpYrZn2a4=
 github.com/google/go-querystring v1.1.0 h1:AnCroh3fv4ZBgVIf1Iwtovgjaw/GiKJo8M8yD/fhyJ8=
 github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=
@@ -363,6 +366,8 @@ go.uber.org/fx v1.21.0 h1:qqD6k7PyFHONffW5speYx403ywanuASqU4Rqdpc22XY=
 go.uber.org/fx v1.21.0/go.mod h1:HT2M7d7RHo+ebKGh9NRcrsrHHfpZ60nW3QRubMRfv48=
 go.uber.org/fx v1.21.1 h1:RqBh3cYdzZS0uqwVeEjOX2p73dddLpym315myy/Bpb0=
 go.uber.org/fx v1.21.1/go.mod h1:HT2M7d7RHo+ebKGh9NRcrsrHHfpZ60nW3QRubMRfv48=
+go.uber.org/fx v1.22.0 h1:pApUK7yL0OUHMd8vkunWSlLxZVFFk70jR2nKde8X2NM=
+go.uber.org/fx v1.22.0/go.mod h1:HT2M7d7RHo+ebKGh9NRcrsrHHfpZ60nW3QRubMRfv48=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
 go.uber.org/goleak v1.3.0/go.mod h1:CoHD4mav9JJNrW/WLlf7HGZPjdw8EucARQHekz1X6bE=
 go.uber.org/multierr v1.11.0 h1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=

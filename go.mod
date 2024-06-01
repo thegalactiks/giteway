@@ -3,7 +3,7 @@ module github.com/thegalactiks/giteway
 go 1.22.2
 
 require (
-	github.com/bradleyfalzon/ghinstallation/v2 v2.10.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.11.0
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-contrib/requestid v1.0.2
 	github.com/gin-contrib/timeout v1.0.1
@@ -28,7 +28,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.27.0
 	go.opentelemetry.io/otel/sdk v1.27.0
 	go.opentelemetry.io/otel/sdk/metric v1.27.0
-	go.uber.org/fx v1.21.1
+	go.uber.org/fx v1.22.0
 	go.uber.org/zap v1.27.0
 )
 
