@@ -17,9 +17,9 @@ require (
 	github.com/knadh/koanf/providers/file v0.1.0
 	github.com/knadh/koanf/v2 v2.1.1
 	github.com/magiconair/properties v1.8.7
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
-	github.com/uptrace/opentelemetry-go-extra/otelzap v0.3.0
+	github.com/uptrace/opentelemetry-go-extra/otelzap v0.3.1
 	github.com/xanzy/go-gitlab v0.105.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
@@ -75,7 +75,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
-	github.com/uptrace/opentelemetry-go-extra/otelutil v0.3.0 // indirect
+	github.com/uptrace/opentelemetry-go-extra/otelutil v0.3.1 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.27.0 // indirect
 	go.opentelemetry.io/otel/log v0.3.0 // indirect
 	go.opentelemetry.io/otel/metric v1.27.0 // indirect
