@@ -20,7 +20,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	github.com/uptrace/opentelemetry-go-extra/otelzap v0.3.1
-	github.com/xanzy/go-gitlab v0.105.0
+	github.com/xanzy/go-gitlab v0.106.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
 	go.opentelemetry.io/otel v1.27.0
@@ -28,7 +28,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.27.0
 	go.opentelemetry.io/otel/sdk v1.27.0
 	go.opentelemetry.io/otel/sdk/metric v1.27.0
-	go.uber.org/fx v1.22.0
+	go.uber.org/fx v1.22.1
 	go.uber.org/zap v1.27.0
 )
 
