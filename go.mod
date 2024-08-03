@@ -9,7 +9,7 @@ require (
 	github.com/gin-contrib/timeout v1.0.1
 	github.com/gin-contrib/zap v1.1.3
 	github.com/gin-gonic/gin v1.10.0
-	github.com/google/go-github/v60 v60.0.0
+	github.com/google/go-github/v63 v63.0.0
 	github.com/google/go-github/v63 v63.0.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/confmap v0.1.0
