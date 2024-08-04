@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/google/go-github/v60/github"
+	"github.com/google/go-github/v63/github"
 	"github.com/thegalactiks/giteway/hosting"
 )
 
