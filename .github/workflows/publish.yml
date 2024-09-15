@@ -15,6 +15,7 @@ jobs:
 
     permissions:
       contents: write
+      id-token: write
       packages: write
       pull-requests: write
 
@@ -42,6 +43,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
 
       - uses: goreleaser/goreleaser-action@v6
         with:
