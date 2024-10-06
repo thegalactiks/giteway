@@ -35,7 +35,7 @@ type ServeConfig struct {
 }
 
 type LoggingConfig struct {
-	Level       int    `json:"level"`
+	Level       int8   `json:"level"`
 	Encoding    string `json:"encoding"`
 	Development bool   `json:"development"`
 }
@@ -72,6 +72,7 @@ func New(configFilePath string) (*Config, error) {
 
 	// load from env
 	err = k.Load(env.Provider(_defaultPrefix, ".", func(s string) string {
+		// nolint:gocritic
 		return strings.Replace(strings.ToLower(
 			strings.TrimPrefix(s, _defaultPrefix)), "_", ".", -1)
 	}), nil)

@@ -97,7 +97,11 @@ func (h *Handler) CreateFile(ctx *gin.Context) {
 		Path:    uri.Path,
 		Content: &form.Content,
 	}
-	file.SetEncoding(form.Encoding)
+	if _, err := file.SetEncoding(form.Encoding); err != nil {
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		return
+	}
+
 	_, commit, err := hostingService.CreateFile(ctx, repo, &file, &hosting.CreateFileOpts{
 		SHA:    queryForm.SHA,
 		Branch: &queryForm.Branch,
@@ -147,7 +151,11 @@ func (h *Handler) UpdateFile(ctx *gin.Context) {
 		Path:    uri.Path,
 		Content: &form.Content,
 	}
-	file.SetEncoding(form.Encoding)
+	if _, err := file.SetEncoding(form.Encoding); err != nil {
+		RespondError(ctx, http.StatusBadRequest, HTTPRequestValidationFailed, err)
+		return
+	}
+
 	_, commit, err := hostingService.UpdateFile(ctx, repo, &file, &hosting.UpdateFileOpts{
 		SHA:    queryForm.SHA,
 		Branch: &queryForm.Branch,

@@ -78,6 +78,7 @@ func WithLogger(ctx context.Context, logger *zap.SugaredLogger) context.Context 
 	if gCtx, ok := ctx.(*gin.Context); ok {
 		ctx = gCtx.Request.Context()
 	}
+	// nolint:staticcheck
 	return context.WithValue(ctx, loggerKey, logger)
 }
 
