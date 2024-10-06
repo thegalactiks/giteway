@@ -29,11 +29,6 @@ func createPid(repo *hosting.Repository) string {
 	return fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
 }
 
-func newTrue() *bool {
-	b := true
-	return &b
-}
-
 func newFalse() *bool {
 	b := false
 	return &b

@@ -59,6 +59,7 @@ func NewServeCmd() (serveCmd *cobra.Command) {
 				Level:       zapcore.Level(cfg.LoggingConfig.Level),
 				Development: cfg.LoggingConfig.Development,
 			})
+			// nolint:errcheck
 			defer logging.DefaultLogger().Sync()
 
 			tp := otel.InitTracerProvider()
@@ -99,6 +100,7 @@ func newHTTPServer(lc fx.Lifecycle, tp *oteltrace.TracerProvider, mp *otelmetric
 	r := gin.New()
 
 	logger := otelzap.New(zap.NewExample())
+	// nolint:errcheck
 	defer logger.Sync()
 
 	undo := otelzap.ReplaceGlobals(logger)
@@ -124,8 +126,9 @@ func newHTTPServer(lc fx.Lifecycle, tp *oteltrace.TracerProvider, mp *otelmetric
 	r.Use(gin.Recovery())
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", cfg.ServeConfig.Port),
-		Handler: r,
+		Addr:        fmt.Sprintf(":%d", cfg.ServeConfig.Port),
+		ReadTimeout: 5 * time.Second,
+		Handler:     r,
 	}
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -138,9 +141,12 @@ func newHTTPServer(lc fx.Lifecycle, tp *oteltrace.TracerProvider, mp *otelmetric
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			// nolint:errcheck
 			tp.Shutdown(ctx)
+			// nolint:errcheck
 			mp.Shutdown(ctx)
 			logging.FromContext(ctx).Info("server shutdown")
+			// nolint:errcheck
 			return srv.Shutdown(ctx)
 		},
 	})

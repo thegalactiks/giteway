@@ -47,32 +47,34 @@ func HostingMiddleware(githubService *github.GithubService) gin.HandlerFunc {
 		hostingParam := ctx.Param("hosting")
 		ownerParam := ctx.Param("owner")
 		var service hosting.GitHostingService
-		if hostingParam == GithubHost {
-			if token != nil {
+		switch {
+		case hostingParam == GithubHost:
+			switch {
+			case token != nil:
 				service, err = githubService.WithAuthToken(ctx, *token)
 				if err != nil {
 					RespondError(ctx, http.StatusUnauthorized, "invalid github token", err)
 					ctx.Abort()
 					return
 				}
-			} else if ownerParam != "" && githubService.IsKnownInstallation(ownerParam) {
+			case ownerParam != "" && githubService.IsKnownInstallation(ownerParam):
 				service, err = githubService.WithInstallationOwner(ownerParam)
 				if err != nil {
 					RespondError(ctx, http.StatusUnauthorized, "invalid github installation", err)
 					ctx.Abort()
 					return
 				}
-			} else {
+			default:
 				service = githubService
 			}
-		} else if hostingParam == GitlabHost {
+		case hostingParam == GitlabHost:
 			service, err = gitlab.NewGitlabService(*token)
 			if err != nil {
 				RespondError(ctx, http.StatusUnauthorized, "invalid gitlab token", err)
 				ctx.Abort()
 				return
 			}
-		} else {
+		default:
 			RespondError(ctx, http.StatusBadRequest, "unknown git provider")
 			ctx.Abort()
 			return
