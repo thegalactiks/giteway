@@ -18,5 +18,7 @@ FROM gcr.io/distroless/static-debian11:nonroot AS runner
 
 COPY --from=builder --chown=nonroot:nonroot /usr/bin/giteway /usr/bin/giteway
 
+EXPOSE 5000
+
 ENTRYPOINT ["giteway", "serve"]
 CMD ["giteway"]
