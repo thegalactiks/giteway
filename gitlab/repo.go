@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/thegalactiks/giteway/hosting"
-	"github.com/xanzy/go-gitlab"
+	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
 
 func mapProject(owner string, p *gitlab.Project) *hosting.Repository {
