@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/google/go-github/v66/github"
+	"github.com/google/go-github/v68/github"
 	"github.com/thegalactiks/giteway/hosting"
 )
 
