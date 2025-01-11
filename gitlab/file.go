@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/thegalactiks/giteway/hosting"
-	"github.com/xanzy/go-gitlab"
+	gitlab "gitlab.com/gitlab-org/api/client-go"
 )
 
 func mapTreeNode(n *gitlab.TreeNode) *hosting.File {
