@@ -1,4 +1,4 @@
-FROM golang:1.23-bullseye AS builder
+FROM golang:1.23-bookworm AS builder
 
 WORKDIR /go/src/github.com/emmanuelgautier/giteway
 
@@ -14,7 +14,7 @@ COPY . .
 
 RUN go build -o /usr/bin/giteway .
 
-FROM gcr.io/distroless/static-debian11:nonroot AS runner
+FROM gcr.io/distroless/static-debian12:nonroot AS runner
 
 COPY --from=builder --chown=nonroot:nonroot /usr/bin/giteway /usr/bin/giteway
 
