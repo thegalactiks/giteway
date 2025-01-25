@@ -1,6 +1,6 @@
 module github.com/thegalactiks/giteway
 
-go 1.23
+go 1.23.5
 
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.13.0
