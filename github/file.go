@@ -86,7 +86,7 @@ func (h *GithubService) CreateFile(ctx context.Context, repo *hosting.Repository
 	githubContentResponse, _, err := h.client.Repositories.CreateFile(ctx, repo.Owner, repo.Name, formatPath(file.Path), &github.RepositoryContentFileOptions{
 		Branch:  branch,
 		Content: []byte(*file.Content),
-		Message: opts.Commit.Message,
+		Message: opts.Message,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -146,7 +146,7 @@ func (h *GithubService) DeleteFile(ctx context.Context, repo *hosting.Repository
 	githubContentResponse, _, err := h.client.Repositories.DeleteFile(ctx, repo.Owner, repo.Name, formatPath(path), &github.RepositoryContentFileOptions{
 		Branch:  branch,
 		SHA:     sha,
-		Message: opts.Commit.Message,
+		Message: opts.Message,
 	})
 	if err != nil {
 		return nil, err

@@ -72,9 +72,8 @@ func New(configFilePath string) (*Config, error) {
 
 	// load from env
 	err = k.Load(env.Provider(_defaultPrefix, ".", func(s string) string {
-		// nolint:gocritic
-		return strings.Replace(strings.ToLower(
-			strings.TrimPrefix(s, _defaultPrefix)), "_", ".", -1)
+		return strings.ReplaceAll(strings.ToLower(
+			strings.TrimPrefix(s, _defaultPrefix)), "_", ".")
 	}), nil)
 	if err != nil {
 		log.Printf("error loading config from env: %v", err)

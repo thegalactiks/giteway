@@ -47,8 +47,8 @@ func HostingMiddleware(githubService *github.GithubService) gin.HandlerFunc {
 		hostingParam := ctx.Param("hosting")
 		ownerParam := ctx.Param("owner")
 		var service hosting.GitHostingService
-		switch {
-		case hostingParam == GithubHost:
+		switch hostingParam {
+		case GithubHost:
 			switch {
 			case token != nil:
 				service, err = githubService.WithAuthToken(ctx, *token)
@@ -67,7 +67,7 @@ func HostingMiddleware(githubService *github.GithubService) gin.HandlerFunc {
 			default:
 				service = githubService
 			}
-		case hostingParam == GitlabHost:
+		case GitlabHost:
 			service, err = gitlab.NewGitlabService(*token)
 			if err != nil {
 				RespondError(ctx, http.StatusUnauthorized, "invalid gitlab token", err)
