@@ -34,9 +34,9 @@ var (
 	configFile string
 )
 
-func timeoutMiddleware(timeoutMS time.Duration) gin.HandlerFunc {
+func timeoutMiddleware(timeoutDuration time.Duration) gin.HandlerFunc {
 	return timeout.New(
-		timeout.WithTimeout(timeoutMS*time.Millisecond),
+		timeout.WithTimeout(timeoutDuration*time.Millisecond),
 		timeout.WithHandler(func(ctx *gin.Context) {
 			ctx.Next()
 		}),

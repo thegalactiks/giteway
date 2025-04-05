@@ -97,7 +97,7 @@ func (h *GitlabService) CreateFile(ctx context.Context, repo *hosting.Repository
 		Branch:        branch,
 		Encoding:      file.GetEncoding(),
 		Content:       file.Content,
-		CommitMessage: opts.Commit.Message,
+		CommitMessage: opts.Message,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -127,7 +127,7 @@ func (h *GitlabService) UpdateFile(ctx context.Context, repo *hosting.Repository
 		Branch:        branch,
 		Encoding:      file.GetEncoding(),
 		Content:       file.Content,
-		CommitMessage: opts.Commit.Message,
+		CommitMessage: opts.Message,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -155,7 +155,7 @@ func (h *GitlabService) DeleteFile(ctx context.Context, repo *hosting.Repository
 
 	_, err := h.client.RepositoryFiles.DeleteFile(pid, formatPath(path), &gitlab.DeleteFileOptions{
 		Branch:        branch,
-		CommitMessage: opts.Commit.Message,
+		CommitMessage: opts.Message,
 	})
 	if err != nil {
 		return nil, err
