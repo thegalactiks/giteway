@@ -3,7 +3,7 @@ module github.com/thegalactiks/giteway
 go 1.24
 
 require (
-	github.com/bradleyfalzon/ghinstallation/v2 v2.14.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.15.0
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-contrib/requestid v1.0.5
 	github.com/gin-contrib/timeout v1.0.2
@@ -12,10 +12,10 @@ require (
 	github.com/google/go-github/v68 v68.0.0
 	github.com/knadh/koanf/parsers/yaml v0.1.0
 	github.com/knadh/koanf/providers/confmap v0.1.0
-	github.com/knadh/koanf/providers/env v1.0.0
-	github.com/knadh/koanf/providers/file v1.1.2
-	github.com/knadh/koanf/v2 v2.1.2
-	github.com/magiconair/properties v1.8.9
+	github.com/knadh/koanf/providers/env v1.1.0
+	github.com/knadh/koanf/providers/file v1.2.0
+	github.com/knadh/koanf/v2 v2.2.0
+	github.com/magiconair/properties v1.8.10
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/uptrace/opentelemetry-go-extra/otelzap v0.3.2
@@ -50,6 +50,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/google/go-github/v69 v69.2.0 // indirect
+	github.com/google/go-github/v71 v71.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
