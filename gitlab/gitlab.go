@@ -15,7 +15,7 @@ type GitlabService struct {
 var _ hosting.GitHostingService = (*GitlabService)(nil)
 
 func NewGitlabService(token string) (*GitlabService, error) {
-	client, err := gitlab.NewOAuthClient(token, gitlab.WithHTTPClient(http.NewHttpClient(nil)))
+	client, err := gitlab.NewClient(token, gitlab.WithHTTPClient(http.NewHttpClient(nil)))
 	if err != nil {
 		return nil, err
 	}
