@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/google/go-github/v68/github"
+	"github.com/google/go-github/v79/github"
 	"github.com/thegalactiks/giteway/hosting"
 )
 
@@ -54,11 +54,9 @@ func (h *GithubService) GetBranches(ctx context.Context, repo *hosting.Repositor
 }
 
 func (h *GithubService) CreateBranch(ctx context.Context, repo *hosting.Repository, opts *hosting.CreateBranchOpts) (*hosting.Branch, error) {
-	var githubRef = github.Reference{}
+	var githubRef = github.CreateRef{}
 	if opts.SHA != nil {
-		githubRef.Object = &github.GitObject{
-			SHA: opts.SHA,
-		}
+		githubRef.SHA = *opts.SHA
 	} else {
 		var ref string
 		if opts.Ref != nil {
@@ -77,13 +75,13 @@ func (h *GithubService) CreateBranch(ctx context.Context, repo *hosting.Reposito
 			return nil, err
 		}
 
-		githubRef.Object = commit.Object
+		githubRef.SHA = commit.GetObject().GetSHA()
 	}
 
 	branchRef := getBranchRefFromName(*opts.Branch)
-	githubRef.Ref = &branchRef
+	githubRef.Ref = branchRef
 
-	githubBranchRef, _, err := h.client.Git.CreateRef(ctx, repo.Owner, repo.Name, &githubRef)
+	githubBranchRef, _, err := h.client.Git.CreateRef(ctx, repo.Owner, repo.Name, githubRef)
 	if err != nil {
 		return nil, err
 	}

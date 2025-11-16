@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/bradleyfalzon/ghinstallation/v2"
-	"github.com/google/go-github/v68/github"
+	"github.com/google/go-github/v79/github"
 	"github.com/thegalactiks/giteway/hosting"
 	"github.com/thegalactiks/giteway/internal/config"
 	internalhttp "github.com/thegalactiks/giteway/internal/http"
