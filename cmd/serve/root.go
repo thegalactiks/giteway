@@ -37,9 +37,6 @@ var (
 func timeoutMiddleware(timeoutDuration time.Duration) gin.HandlerFunc {
 	return timeout.New(
 		timeout.WithTimeout(timeoutDuration*time.Millisecond),
-		timeout.WithHandler(func(ctx *gin.Context) {
-			ctx.Next()
-		}),
 		timeout.WithResponse(func(ctx *gin.Context) {
 			ctx.String(http.StatusRequestTimeout, "timeout")
 		}),
